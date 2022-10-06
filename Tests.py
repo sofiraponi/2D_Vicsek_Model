@@ -8,42 +8,82 @@
 #
 #==============================================================
 
-
 import Vicsek_Model
 import numpy as np
 import hypothesis
 from hypothesis import strategies as st
-from hypothesis import given
+from hypothesis import given, settings
+import configparser
+
+config=configparser.ConfigParser()
+config.read('settings.ini')
 
 
-@given(N=st.integers(1,1000), L = st.integers(1,10))
+@given(N=st.integers(1,int(config['parameters']['N'])), L = st.integers(1,int(config['parameters']['L'])))
 
-def test_InitialPosition(N,L):
+def test_InitialConfiguration(N,L):
 
-    x0,y0=Vicsek_Model.InitialPosition(N,L)
+    x, y, theta = Vicsek_Model.InitialConfiguration(N,L)
 
-    # test if lenght of x and y is N and system space dimension is 2.
+    # Test if lenght of x, y and theta is N.
 
-    assert len(x0) == len(y0) == N
+    assert len(x) == len(y) == len(theta) == N
 
-    # test that all particles are inside the system space
+    # Test that all particles are inside the system space
 
-    assert all(i < L and i>=0 for i in x0)
-    assert all(i < L and i>=0 for i in y0)
+    assert all(i < L and i>=0 for i in x)
+    assert all(i < L and i>=0 for i in y)
 
 
-@given(v0=st.floats(0.,10.), N=st.integers(1,1000))
+@given(v0=st.floats(0.,float(config['parameters']['v0'])), theta=st.floats(0.,2*np.pi))
 
-def test_InitialVelocity(N,v0):
+def test_VelocityUpdate(v0,theta):
 
-    vx0, vy0, theta0 =Vicsek_Model.InitialVelocity(N,v0)
+    vx, vy = Vicsek_Model.VelocityUpdate(v0,theta)
 
-    # test if lenght of vx, vy and theta is N.
+    # Test if the velocity has constant module v0
 
-    assert len(vx0) == len(vy0) == len(theta0) == N
+    mod_square = vx**2+vy**2
 
-    # test if all velocities have constant module v0
+    assert np.isclose(mod_square,v0**2)
 
-    mod_square = vx0**2+vy0**2
 
-    assert all(np.isclose(i,v0**2) for i in mod_square)
+@given(R0=st.floats(0.5,float(config['parameters']['R0'])),eta=st.floats(0.,1.),N=st.integers(10,int(config['parameters']['N'])), L=st.integers(1,int(config['parameters']['L'])),dt=st.floats(float(config['parameters']['dt']),1.),v0=st.floats(float(config['parameters']['v0']),2.),T=st.integers(100,int(config['parameters']['T'])))
+@settings(max_examples = 1)
+
+def test_ConfigurationUpdate(N,L,v0,R0,eta,dt,T):
+
+    config = Vicsek_Model.InitialConfiguration(N,L)
+
+    vel = Vicsek_Model.VelocityUpdate(v0,config[2])
+
+    initphi = Vicsek_Model.OrderParameter(config[2],N)
+
+    for i in range(T):
+
+        config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,N,L,dt)
+
+        # Test the bundary conditions
+
+        assert all(i < L and i>=0 for i in config[0])
+        assert all(i < L and i>=0 for i in config[0])
+
+        vel = Vicsek_Model.VelocityUpdate(v0,config[2])
+
+    finalphi = Vicsek_Model.OrderParameter(config[2],N)
+
+    # Test the phase transition to collective order
+
+    assert finalphi > initphi
+
+
+@given(theta=st.floats(0.,2*np.pi),N=st.integers(1,int(config['parameters']['N'])))
+
+def test_OrderParameter(theta,N):
+
+    phi = Vicsek_Model.OrderParameter(theta,N)
+
+    # Test if the order parameter is between 0 and 1
+
+    assert phi<=1
+    assert phi>=0
