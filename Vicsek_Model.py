@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import math
 
 def InitialConfiguration(N,L):
-    
+
     """
 
     This function creates random particles initial position and orientation.
@@ -133,8 +133,5 @@ def OrderParameter(theta,N):
     sx = np.sum(np.cos(theta))
     sy = np.sum(np.sin(theta))
     phi = ((sx)**2 + (sy)**2)**(0.5)/N
-
-    if phi < 0 or phi > 1.000000000000001:
-        raise ValueError('The order paramter must be between 0 and 1, but is {}!'.format(phi))
 
     return phi
