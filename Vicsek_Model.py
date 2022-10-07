@@ -27,7 +27,7 @@ def InitialConfiguration(N,L):
 
     """
 
-    np.random.seed(10)
+    np.random.seed(3)
 
     x = np.random.rand(N)*L
 
