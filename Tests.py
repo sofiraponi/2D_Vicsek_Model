@@ -14,6 +14,8 @@ import hypothesis
 from hypothesis import strategies as st
 from hypothesis import given, settings
 import configparser
+import pytest
+
 
 config=configparser.ConfigParser()
 config.read('settings.ini')
@@ -33,7 +35,6 @@ def test_InitialConfiguration(N,L):
 
     assert all(i < L and i>=0 for i in x)
     assert all(i < L and i>=0 for i in y)
-
 
 @given(v0=st.floats(0.,float(config['parameters']['v0'])), theta=st.floats(0.,2*np.pi))
 
@@ -77,13 +78,23 @@ def test_ConfigurationUpdate(N,L,v0,R0,eta,dt,T):
     assert finalphi > initphi
 
 
-@given(theta=st.floats(0.,2*np.pi),N=st.integers(1,int(config['parameters']['N'])))
+@given(N=st.integers(1,int(config['parameters']['N'])))
 
-def test_OrderParameter(theta,N):
+def test_OrderParameter(N):
 
-    phi = Vicsek_Model.OrderParameter(theta,N)
+    theta_equal=np.repeat( 2*np.pi*np.random.rand(),N)
 
-    # Test if the order parameter is between 0 and 1
+    phi_equal = Vicsek_Model.OrderParameter(theta_equal,N)
 
-    assert phi<=1
-    assert phi>=0
+    # Test if the order parameter is 1 when all orientations are equal
+
+    assert np.isclose(phi_equal,1.0)
+
+    theta_random=2*np.pi*np.random.rand(N)
+
+    phi_random = Vicsek_Model.OrderParameter(theta_random,N)
+
+    # Test if the order parameter is between 0 and 1 when orientations are random
+
+    assert phi_random >= 0
+    assert phi_random <= 1
