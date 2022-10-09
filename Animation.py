@@ -47,3 +47,4 @@ def animate(i):
 
 animation = FuncAnimation(fig, animate, frames=T+1, interval=50, repeat=False)
 plt.show()
+animation.save('animation.gif',writer = 'pillow', fps = T+1)
