@@ -14,8 +14,6 @@ import hypothesis
 from hypothesis import strategies as st
 from hypothesis import given, settings
 import configparser
-import pytest
-
 
 config=configparser.ConfigParser()
 config.read('settings.ini')
@@ -82,7 +80,7 @@ def test_ConfigurationUpdate(N,L,v0,R0,eta,dt,T):
 
 def test_OrderParameter(N):
 
-    theta_equal=np.repeat( 2*np.pi*np.random.rand(),N)
+    theta_equal=np.repeat(2*np.pi*np.random.rand(),N)
 
     phi_equal = Vicsek_Model.OrderParameter(theta_equal,N)
 
