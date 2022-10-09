@@ -30,11 +30,11 @@ T = int(config['parameters']['T'])        # Number of steps
 
 phi_path = config['paths']['phi']
 pos_path = config['paths']['pos']
-vel_path = config['paths']['vel']
+theta_path = config['paths']['theta']
 
 phi=np.empty(T+1)
 data_pos=np.empty([T+1,2,N])
-data_vel=np.empty([T+1,2,N])
+data_theta=np.empty([T+1,1,N])
 
 # Initial configuration
 
@@ -45,7 +45,7 @@ config = Vicsek_Model.InitialConfiguration(N,L)
 vel = Vicsek_Model.VelocityUpdate(v0,config[2])
 
 data_pos[0] = config[0], config[1]
-data_vel[0] = vel
+data_theta[0] = config[2]
 
 # Initial order parameter
 
@@ -62,10 +62,10 @@ for i in range(T):
     phi[i+1]=Vicsek_Model.OrderParameter(config[2],N)
 
     data_pos[i+1] = config[0], config[1]
-    data_vel[i+1]= vel
+    data_theta[i+1]= config[2]
 
 # Save particles confoguration and order parameter evolution
 
 np.save(pos_path,data_pos)
-np.save(vel_path,data_vel)
+np.save(theta_path,data_theta)
 np.save(phi_path,phi)
