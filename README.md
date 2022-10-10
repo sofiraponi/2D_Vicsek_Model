@@ -15,7 +15,7 @@ Where the ![equation](https://latex.codecogs.com/svg.image?Arg) function returns
 
 ![equation](https://latex.codecogs.com/svg.image?n_{ij}(t)=\begin{cases}&&space;1&space;\text{&space;if&space;}|\textbf{r}_i(t)-\textbf{r}_j(t)|<R_0\\\\&&space;0&space;\text{&space;if&space;}|\textbf{r}_i(t)-\textbf{r}_j(t)|>R_0\end{cases}&space;)
 
-The alignment is hindered by a noise term ![equation](https://latex.codecogs.com/svg.image?\eta_{i}(t)) uniformly distributed in the interval ![equation](https://latex.codecogs.com/svg.image?[-\eta/2,\eta/2]), which plays a role similar to that of the temperature in equilibrium systems.
+The alignment is hindered by a noise term ![equation](https://latex.codecogs.com/svg.image?\eta_{i}(t)) uniformly distributed in the interval ![equation](https://latex.codecogs.com/svg.image?[-\eta/2,\eta/2]), with amplitude ![equation](https://latex.codecogs.com/svg.image?\eta\in[0,1]), which plays a role similar to that of the temperature in equilibrium systems.
 
 If the polar alignment term is strong enough to overcome the noise effect, the system develops a global orientation order and therefore a collective movement. This process can be studied by monitoring the polar order parameter ![equation](https://latex.codecogs.com/svg.image?\varphi(t)), analogue of the total magnetization in spin systems, defined as the modulus of the mean direction of motion of the entire system of particles:
 
