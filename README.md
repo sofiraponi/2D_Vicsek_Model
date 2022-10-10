@@ -24,4 +24,8 @@ If the polar alignment term is strong enough to overcome the noise effect, the s
 The order parameter is approximately null if the directions of motion of the individual particles are distributed randomly, as the latter tend to cancel each other out in the sum; while for the phase of coherent motion, with an ordered direction of the velocities, it assumes a finite and approximately unitary value.
 
 #
-![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation.gif)
+![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif)
+![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif)
+![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif)
+
+
