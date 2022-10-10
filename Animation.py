@@ -27,14 +27,14 @@ L = int(config['parameters']['L'])
 
 fig, (ax1,ax2) = plt.subplots(1,2, figsize=(10, 5))
 
+fig.suptitle("v$_0$ = 0.2, η = 0.1, R$_0$ = 1.0, dt = 1.0, N = 200")
+
 t = np.linspace(0, T+1, T+1)
 
 line, = ax2.plot(t, phi, color='r')
-ax2.set_title("Order Parameter")
-ax2.set_ylabel("φ")
+ax2.set_ylabel("Order Parameter")
 ax2.set_xlabel("Frame")
 ax2.grid()
-
 
 def animate(i):
 
@@ -47,4 +47,5 @@ def animate(i):
 
 animation = FuncAnimation(fig, animate, frames=T+1, interval=50, repeat=False)
 plt.show()
+
 animation.save('animation.gif',writer = 'pillow', fps = T+1)
