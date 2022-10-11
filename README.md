@@ -23,7 +23,12 @@ If the polar alignment term is strong enough to overcome the noise effect, the s
 
 The order parameter is approximately null if the directions of motion of the individual particles are distributed randomly, as the latter tend to cancel each other out in the sum; while for the phase of coherent motion, with an ordered direction of the velocities, it assumes a finite and approximately unitary value.
 
-#
+# Structure of the project
+
+The aim of this project is to simulate the 2D Vicsek model in order to visualize the phase transition from random to ordered motion of particles. To do this, once the parameters of the model have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
+
+The steps that the user must follow to perform the simulation and obtain a visualization of the evolution over time of the particle system and of the order parameter are listed below.
+
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif)
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif)
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif)
