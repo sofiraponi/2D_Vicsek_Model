@@ -50,7 +50,12 @@ defined in [Vicsek_Model](https://github.com/sofiraponi/2D_Vicsek_Model/blob/mai
 
 5. [Animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Animation.py) is a .py file that imports the data from the data folder and creates, using mathplotlib.animation.FuncAnimated, a figure formed by a real time visualization of the particles motion and a real time plot of the order parameter. The figure is saved as animation.gif in the project folder.
 
-# Examples
+# Simulation examples
+
+Below are shown three examples of simulation obtained with different noise amplitude ![equation](https://latex.codecogs.com/svg.image?\eta) and fixed ![equation](https://latex.codecogs.com/svg.image?v_0&space;=&space;0.2), ![equation](https://latex.codecogs.com/svg.image?R_0&space;=&space;1.0), ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t&space;=&space;1.0), ![equation](https://latex.codecogs.com/svg.image?N&space;=&space;200) and ![equation](https://latex.codecogs.com/svg.image?T&space;=&space;250).
+In particular [animation_1.gif](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif) is obtained by setting ![equation](https://latex.codecogs.com/svg.image?\eta&space;=&space;0.1), [animation_2.gif](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif) is characterized by ![equation](https://latex.codecogs.com/svg.image?\eta&space;=&space;0.5) and in [animation_3.gif](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif) ![equation](https://latex.codecogs.com/svg.image?\eta&space;=&space;0.9).
+As expected, as the noise amplitude increases, the transition to the collective motion of particles is increasingly hampered. In fact, it is noted that for greater ![equation](https://latex.codecogs.com/svg.image?\eta) the order parameter reaches more slowly an almost unitary value and it is subject to greater fluctuations caused by the presence of a strong noise component.
+
 
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif)
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif)
