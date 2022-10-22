@@ -24,7 +24,7 @@ eta = float(config['parameters']['eta'])  # Noise amplitude
 R0 = float(config['parameters']['R0'])    # Interaction radius
 dt = float(config['parameters']['dt'])    # Time step
 N = int(config['parameters']['N'])        # Number of particles
-L = int(config['parameters']['L'])        # Dimension of space
+L = float(config['parameters']['L'])        # Dimension of space
 T = int(config['parameters']['T'])        # Number of steps
 
 # Import local paths
