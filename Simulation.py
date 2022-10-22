@@ -9,12 +9,14 @@
 
 import configparser
 import numpy as np
+import sys
+from sys import argv
 import matplotlib.pyplot as plt
 import Vicsek_Model
 
 # Read configuration file
 config=configparser.ConfigParser()
-config.read('settings.ini')
+config.read(sys.argv[1])
 
 # Import model parameters
 v0 = float(config['parameters']['v0'])    # Velocity modulus
