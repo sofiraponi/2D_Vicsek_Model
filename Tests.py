@@ -13,44 +13,63 @@ import numpy as np
 import hypothesis
 from hypothesis import strategies as st
 from hypothesis import given, settings
-import configparser
-
-config=configparser.ConfigParser()
-config.read('settings.ini')
 
 
-@given(N=st.integers(1,int(config['parameters']['N'])), L = st.integers(1,int(config['parameters']['L'])))
-
+@given(N=st.integers(10,500), L = st.floats(1,50))
 def test_InitialConfiguration(N,L):
 
     x, y, theta = Vicsek_Model.InitialConfiguration(N,L)
 
-    # Test if lenght of x, y and theta is N.
+    # Test if the lenght of x, y and theta is N
 
     assert len(x) == len(y) == len(theta) == N
 
     # Test that all particles are inside the system space
 
-    assert all(i < L and i>=0 for i in x)
-    assert all(i < L and i>=0 for i in y)
+    assert all(i < L and i >= 0 for i in x)
+    assert all(i < L and i >= 0 for i in y)
 
-@given(v0=st.floats(0.,float(config['parameters']['v0'])), theta=st.floats(0.,2*np.pi))
 
+@given(v0=st.floats(0.,10.,exclude_min=True), theta=st.floats(0.,2*np.pi))
 def test_VelocityUpdate(v0,theta):
 
-    vx, vy = Vicsek_Model.VelocityUpdate(v0,theta)
+    vel = Vicsek_Model.VelocityUpdate(v0,theta)
 
     # Test if the velocity has constant module v0
 
-    mod_square = vx**2+vy**2
+    mod_square = vel[0]**2+vel[1]**2
 
     assert np.isclose(mod_square,v0**2)
 
 
-@given(R0=st.floats(0.5,float(config['parameters']['R0'])),eta=st.floats(0.,1.),N=st.integers(10,int(config['parameters']['N'])), L=st.integers(1,int(config['parameters']['L'])),dt=st.floats(float(config['parameters']['dt']),1.),v0=st.floats(float(config['parameters']['v0']),2.),T=st.integers(100,int(config['parameters']['T'])))
-@settings(max_examples = 1)
+@given(N=st.integers(10,500), L = st.floats(1,50))
+@settings(deadline=500)
+def test_NeighborsMeanAngle(N,L):
 
-def test_ConfigurationUpdate(N,L,v0,R0,eta,dt,T):
+    np.random.seed(3)
+
+    R0=L*np.random.rand()
+
+    config=Vicsek_Model.InitialConfiguration(N,L)
+
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,R0)
+
+    # Test that the mean angle is between -π and π
+
+    assert all(i >= -np.pi and i <= np.pi for i in mean_theta)
+
+    # Test if the output of the function is a ndarray type object
+
+    assert isinstance(mean_theta,np.ndarray)
+
+
+@given(eta=st.floats(0.,1.), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0.,1.,exclude_min=True), v0=st.floats(0.,10.,exclude_min=True), T=st.integers(50,1000))
+@settings(max_examples = 1)
+def test_ConfigurationUpdate(N,L,v0,eta,dt,T):
+
+    np.random.seed(3)
+
+    R0 = L*np.random.rand()
 
     config = Vicsek_Model.InitialConfiguration(N,L)
 
@@ -62,7 +81,7 @@ def test_ConfigurationUpdate(N,L,v0,R0,eta,dt,T):
 
         config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,N,L,dt)
 
-        # Test the bundary conditions
+        # Test the periodic bundary conditions
 
         assert all(i < L and i>=0 for i in config[0])
         assert all(i < L and i>=0 for i in config[0])
@@ -71,20 +90,21 @@ def test_ConfigurationUpdate(N,L,v0,R0,eta,dt,T):
 
     finalphi = Vicsek_Model.OrderParameter(config[2],N)
 
-    # Test the phase transition to collective order
+    # Test the phase transition
 
     assert finalphi > initphi
 
 
-@given(N=st.integers(1,int(config['parameters']['N'])))
-
+@given(N=st.integers(10,500))
 def test_OrderParameter(N):
+
+    np.random.seed(3)
 
     theta_equal=np.repeat(2*np.pi*np.random.rand(),N)
 
     phi_equal = Vicsek_Model.OrderParameter(theta_equal,N)
 
-    # Test if the order parameter is 1 when all orientations are equal
+    # Test that the order parameter is 1 when all orientations are equal
 
     assert np.isclose(phi_equal,1.0)
 
@@ -92,7 +112,7 @@ def test_OrderParameter(N):
 
     phi_random = Vicsek_Model.OrderParameter(theta_random,N)
 
-    # Test if the order parameter is between 0 and 1 when orientations are random
+    # Test that the order parameter is between 0 and 1 when orientations are random
 
     assert phi_random >= 0
     assert phi_random <= 1
