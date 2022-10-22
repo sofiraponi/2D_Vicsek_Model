@@ -1,38 +1,39 @@
-#==============================================================
-#Author: Sofia Raponi
-#Date: 05 October, 2022
+#=======================================================================
+# Author: Sofia Raponi
+# Date: 05 October, 2022
 #
-#  Vicsek_Model
+# Vicsek_Model
 #
-#  Aim: To define the functions needed to simulate the Viscek Model for 2 dimensions.
-#
-#==============================================================
+# Aim: To define the functions needed to simulate the 2D Viscek Model.
+#=======================================================================
 
 import numpy as np
 import matplotlib.pyplot as plt
 import math
 
+
 def InitialConfiguration(N,L):
 
     """
 
-    This function creates random particles initial position and orientation.
+    This function creates random initial position and orientation of particles.
 
     Parameters
         N : number of particles
         L : linear dimension of space
 
     Returns:
-        Initial configuration.
+        Initial configuration of the particles.
 
     """
-
+    # Initialization
     np.random.seed(3)
 
+    # Generate random position of particles between 0 and L
     x = np.random.rand(N)*L
-
     y = np.random.rand(N)*L
 
+    # Generate random orientation of particles between 0° and 360°
     theta = 2*np.pi*np.random.rand(N)
 
     initconfig=np.array([x,y,theta])
@@ -62,6 +63,7 @@ def VelocityUpdate(v0,theta):
 
     return vx, vy
 
+
 def ConfigurationUpdate(config,vel,R0,eta,N,L,dt):
 
     """
@@ -77,22 +79,20 @@ def ConfigurationUpdate(config,vel,R0,eta,N,L,dt):
         L: linear dimension of space
         dt: time step
 
-
     Returns:
         Updated configuration.
 
     """
 
+    # Update particles position
     config[0] = config[0] + vel[0]*dt
     config[1] = config[1] + vel[1]*dt
 
-    # Bundary conditions
-
+    # Impose periodic boundary conditions
     config[0] = config[0] % L
     config[1] = config[1] % L
 
-    # Mean orientation of the neighbors within R0
-
+    # Calculate the mean orientation of particles within R0
     mean_theta=np.empty(N)
 
     for i in range(0,N):
@@ -108,8 +108,7 @@ def ConfigurationUpdate(config,vel,R0,eta,N,L,dt):
         mean_sin = np.mean(np.sin(config[2][neighbors]))
         mean_theta[i] = np.arctan2(mean_sin, mean_cos)
 
-    # Orientation update
-
+    # Update particles orientation
     config[2] = mean_theta + eta*(np.random.rand(N)-0.5)
 
     return config
@@ -126,7 +125,7 @@ def OrderParameter(theta,N):
         N: number of particles
 
         Returns:
-        Order parameter phi.
+        Order parameter.
 
     """
 
