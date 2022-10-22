@@ -9,12 +9,14 @@
 
 import configparser
 import numpy as np
+import sys
+from sys import argv
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Read configuration file
 config=configparser.ConfigParser()
-config.read('settings.ini')
+config.read(sys.argv[1])
 
 # Import data and parameters
 phi = np.load('./data/phi.npy')
