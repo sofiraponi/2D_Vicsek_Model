@@ -23,13 +23,18 @@ phi = np.load('./data/phi.npy')
 position = np.load('./data/position.npy')
 theta = np.load('./data/theta.npy')
 
+v0 = float(config['parameters']['v0'])    # Velocity modulus
+eta = float(config['parameters']['eta'])  # Noise amplitude
+R0 = float(config['parameters']['R0'])    # Interaction radius
+dt = float(config['parameters']['dt'])    # Time step
+N = int(config['parameters']['N'])        # Number of particles
+L = int(config['parameters']['L'])        # Dimension of space
 T = int(config['parameters']['T'])
-L = int(config['parameters']['L'])
 
 # Create figure
 fig, (ax1,ax2) = plt.subplots(1,2, figsize=(10, 5))
 
-fig.suptitle("v$_0$ = 0.2, η = 0.1, R$_0$ = 1.0, dt = 1.0, N = 200")
+fig.suptitle("v$_0$ = {}, η = {}, R$_0$ = {}, dt = {}, N = {}".format(v0,eta,R0,dt,N))
 
 # Prepare order parameter real time plot
 t = np.linspace(0, T+1, T+1)
