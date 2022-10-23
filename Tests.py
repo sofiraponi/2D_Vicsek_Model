@@ -43,35 +43,33 @@ def test_VelocityUpdate(v0,theta):
 
 
 @given(N=st.integers(10,500), L = st.floats(1,50))
-@settings(deadline=500)
+@settings(max_examples = 10, deadline=1000)
 def test_NeighborsMeanAngle(N,L):
-
-    np.random.seed(3)
-
-    R0=L*np.random.rand()
 
     config=Vicsek_Model.InitialConfiguration(N,L)
 
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,R0)
+    np.random.seed(3)
+
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,L*np.random.rand())
 
     # Test that the mean angle is between -π and π
 
     assert all(i >= -np.pi and i <= np.pi for i in mean_theta)
 
-    # Test if the output of the function is a ndarray type object
+    # Test that mean_theta is equal to the particle orientation when R0 is 0
 
-    assert isinstance(mean_theta,np.ndarray)
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,0.)
+
+    assert np.allclose(mean_theta,config[2])
 
 
-@given(eta=st.floats(0.,1.), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0.,1.,exclude_min=True), v0=st.floats(0.,10.,exclude_min=True), T=st.integers(50,1000))
+@given(eta=st.floats(0.,1.), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0.,1.,exclude_min=True), v0=st.floats(0.,10.,exclude_min=True), T=st.integers(50,1000),R0=st.floats(0.,L))
 @settings(max_examples = 1)
-def test_ConfigurationUpdate(N,L,v0,eta,dt,T):
-
-    np.random.seed(3)
-
-    R0 = L*np.random.rand()
+def test_ConfigurationUpdate(N,L,v0,eta,dt,T,R0):
 
     config = Vicsek_Model.InitialConfiguration(N,L)
+
+    np.random.seed(3)
 
     vel = Vicsek_Model.VelocityUpdate(v0,config[2])
 
@@ -79,7 +77,7 @@ def test_ConfigurationUpdate(N,L,v0,eta,dt,T):
 
     for i in range(T):
 
-        config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,N,L,dt)
+        config = Vicsek_Model.ConfigurationUpdate(config,vel,L*np.random.rand(),eta,N,L,dt)
 
         # Test the periodic bundary conditions
 
@@ -100,7 +98,7 @@ def test_OrderParameter(N):
 
     np.random.seed(3)
 
-    theta_equal=np.repeat(2*np.pi*np.random.rand(),N)
+    theta_equal=np.repeat(np.pi*(2*np.random.rand()-1),N)
 
     phi_equal = Vicsek_Model.OrderParameter(theta_equal,N)
 
@@ -108,7 +106,7 @@ def test_OrderParameter(N):
 
     assert np.isclose(phi_equal,1.0)
 
-    theta_random=2*np.pi*np.random.rand(N)
+    theta_random= np.pi*(2*np.random.rand(N)-1)
 
     phi_random = Vicsek_Model.OrderParameter(theta_random,N)
 
