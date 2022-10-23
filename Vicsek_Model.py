@@ -33,10 +33,10 @@ def InitialConfiguration(N,L):
     x = np.random.rand(N)*L
     y = np.random.rand(N)*L
 
-    # Generate random orientation of particles between 0° and 360°
-    theta = 2*np.pi*np.random.rand(N)
+    # Generate random orientation of particles between -π and π
+    theta = np.pi*(2*np.random.rand(N)-1)
 
-    initconfig=np.array([x,y,theta])
+    initconfig = np.array([x,y,theta])
 
     return initconfig
 
@@ -59,7 +59,7 @@ def VelocityUpdate(v0,theta):
     vx = v0*np.cos(theta)
     vy = v0*np.sin(theta)
 
-    vel=np.array([vx,vy])
+    vel = np.array([vx,vy])
 
     return vel
 
@@ -80,7 +80,7 @@ def NeighborsMeanAngle(config,N,R0):
 
     """
 
-    mean_theta=np.empty(N)
+    mean_theta=config[2]
 
     for i in range(0,N):
 
@@ -89,6 +89,7 @@ def NeighborsMeanAngle(config,N,R0):
         for j in range(0,N):
 
             if (config[0][i] - config[0][j])**2 + (config[1][i] - config[1][j])**2 <= R0**2:
+
                 neighbors.append(j)
 
         mean_cos = np.mean(np.cos(config[2][neighbors]))
