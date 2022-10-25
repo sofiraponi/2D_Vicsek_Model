@@ -30,7 +30,7 @@ def test_InitialConfiguration(N,L):
     assert all(i < L and i >= 0 for i in y)
 
 
-@given(v0=st.floats(0.,10.,exclude_min=True), theta=st.floats(0.,2*np.pi))
+@given(v0=st.floats(0.,10.,exclude_min=True), theta=st.floats(-np.pi,np.pi))
 def test_VelocityUpdate(v0,theta):
 
     vel = Vicsek_Model.VelocityUpdate(v0,theta)
@@ -63,9 +63,9 @@ def test_NeighborsMeanAngle(N,L):
     assert np.allclose(mean_theta,config[2])
 
 
-@given(eta=st.floats(0.,1.), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0.,1.,exclude_min=True), v0=st.floats(0.,10.,exclude_min=True), T=st.integers(50,1000),R0=st.floats(0.,L))
+@given(eta=st.floats(0.,1.), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0.,1.,exclude_min=True), v0=st.floats(0.,10.,exclude_min=True), T=st.integers(50,1000))
 @settings(max_examples = 1)
-def test_ConfigurationUpdate(N,L,v0,eta,dt,T,R0):
+def test_ConfigurationUpdate(N,L,v0,eta,dt,T):
 
     config = Vicsek_Model.InitialConfiguration(N,L)
 
