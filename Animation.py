@@ -28,17 +28,16 @@ eta = float(config['parameters']['eta'])  # Noise amplitude
 R0 = float(config['parameters']['R0'])    # Interaction radius
 dt = float(config['parameters']['dt'])    # Time step
 N = int(config['parameters']['N'])        # Number of particles
-L = float(config['parameters']['L'])        # Dimension of space
-T = int(config['parameters']['T'])
+L = float(config['parameters']['L'])      # Linear dimension of system space
+T = int(config['parameters']['T'])        # Number of steps
 
 # Create figure
 fig, (ax1,ax2) = plt.subplots(1,2, figsize=(10, 5))
-
 fig.suptitle("v$_0$ = {}, η = {}, R$_0$ = {}, dt = {}, N = {}".format(v0,eta,R0,dt,N))
 
-# Prepare order parameter real time plot
 t = np.linspace(0, T+1, T+1)
 
+# Prepare order parameter real time plot
 line, = ax2.plot(t, phi, color='r')
 ax2.set_ylabel("Order Parameter")
 ax2.set_xlabel("Frame")
