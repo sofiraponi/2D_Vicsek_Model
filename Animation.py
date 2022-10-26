@@ -39,6 +39,7 @@ t = np.linspace(0, T+1, T+1)
 
 # Prepare order parameter real time plot
 line, = ax2.plot(t, phi, color='r')
+ax2.set_ylim([0,1.1])
 ax2.set_ylabel("Order Parameter")
 ax2.set_xlabel("Frame")
 ax2.grid()
