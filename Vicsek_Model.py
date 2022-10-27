@@ -11,19 +11,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-
 def InitialConfiguration(N,L):
 
     """
 
-    This function creates random initial position and orientation of the N particles.
+    This function creates random initial positions and orientations of the N particles.
 
     Parameters
         N : number of particles
         L : linear dimension of space
 
     Returns:
-        Initial configuration of the N particles: coordinates (x, y) and orientation theta.
+        Initial configuration of the N particles.
 
     Raise:
         ValueError if the initial coordinates (x,y) of the N particles are out of the system space of linear dimension L.
@@ -33,23 +32,22 @@ def InitialConfiguration(N,L):
     # Initialization
     np.random.seed(3)
 
-    # Generate random position of particles between 0 and L
+    # Generate random coordinates of particles between 0 and L
     x = np.random.rand(N)*L
     y = np.random.rand(N)*L
 
-    if not all(i < L and i>=0 for i in x):
+    if not all(i < L and i >= 0 for i in x):
         raise ValueError('The x coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(L))
 
-    if not all(i < L and i>=0 for i in y):
+    if not all(i < L and i >= 0 for i in y):
         raise ValueError('The y coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(L))
 
     # Generate random orientation of particles between -π and π
     theta = np.pi*(2*np.random.rand(N)-1)
 
-    initconfig = np.array([x,y,theta])
+    config = np.array([x,y,theta])
 
-    return initconfig
-
+    return config
 
 def VelocityUpdate(v0,theta):
 
@@ -62,7 +60,7 @@ def VelocityUpdate(v0,theta):
         theta: particles orientation
 
     Returns:
-        Velocity (vx,vy) of the N particles.
+        Velocity components (vx,vy).
 
     """
 
@@ -77,7 +75,7 @@ def NeighborsMeanAngle(config,N,R0):
 
     """
 
-    This function calculates the mean orientation of the neighbors within a circle of radius R0 around each of the N particles.
+    This function calculates the mean orientation of the neighbor partcicles within a circle of radius R0 around each of the N particles.
 
     Parameters
         config: previous particles configuration
@@ -85,10 +83,7 @@ def NeighborsMeanAngle(config,N,R0):
         R0: interaction radius
 
     Returns:
-        Mean orientation for each of the N particles.
-
-    Raise:
-        ValueError if the mean angle is less than -π or greater than π.
+        Mean orientation of the N particles.
 
     """
 
@@ -100,7 +95,7 @@ def NeighborsMeanAngle(config,N,R0):
 
         # Find the neighbors of each particle within the interaction radius R0
         for j in range(0,N):
-            if (config[0][i] - config[0][j])**2 + (config[1][i] - config[1][j])**2 <= R0**2:
+            if (config[0][i] - config[0][j])**2+(config[1][i] - config[1][j])**2 <= R0**2:
                 neighbors.append(j)
 
         # Calculate the mean orientation of the neighbor particles within R0
@@ -108,11 +103,7 @@ def NeighborsMeanAngle(config,N,R0):
         mean_sin = np.mean(np.sin(config[2][neighbors]))
         mean_theta[i] = np.arctan2(mean_sin, mean_cos)
 
-        if mean_theta[i] < -np.pi or mean_theta[i] > np.pi:
-            raise ValueError('The mean orientation must be between -π and π but is {}!'.format(mean_theta[i]))
-
     return mean_theta
-
 
 def ConfigurationUpdate(config,vel,R0,eta,N,L,dt):
 
@@ -145,10 +136,10 @@ def ConfigurationUpdate(config,vel,R0,eta,N,L,dt):
     config[0] = config[0] % L
     config[1] = config[1] % L
 
-    if not all(i < L and i>=0 for i in config[0]):
+    if not all(i < L and i >= 0 for i in config[0]):
         raise ValueError('The x coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(L))
 
-    if not all(i < L and i>=0 for i in config[1]):
+    if not all(i < L and i >= 0 for i in config[1]):
         raise ValueError('The y coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(L))
 
     # Calculate the mean orientation of particles within R0
@@ -159,15 +150,14 @@ def ConfigurationUpdate(config,vel,R0,eta,N,L,dt):
 
     return config
 
-
 def OrderParameter(theta,N):
 
     """
 
     This function calculates the order parameter.
 
-    Parameters:
-        theta: particle orientation
+    Parameters
+        theta: particles orientation
         N: number of particles
 
     Returns:
@@ -182,7 +172,7 @@ def OrderParameter(theta,N):
     sy = np.sum(np.sin(theta))
     phi = ((sx)**2 + (sy)**2)**(0.5)/N
 
-    if not phi >= 0 and phi <=1:
+    if not phi >= 0 and phi <= 1:
         raise ValueError('The order parameter must be between 0 and 1 but is {}!'.format(phi))
 
     return phi
