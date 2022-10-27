@@ -12,7 +12,7 @@ import numpy as np
 import sys
 from sys import argv
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, PillowWriter
 
 # Read configuration file
 config=configparser.ConfigParser()
@@ -59,4 +59,5 @@ animation = FuncAnimation(fig, animate, frames=T+1, interval=50, repeat=False)
 plt.show()
 
 # Save animation
-animation.save('animation.gif', writer = 'pillow', fps = T+1)
+writer = PillowWriter(fps = T+1)
+animation.save('animation.gif', writer = writer)
