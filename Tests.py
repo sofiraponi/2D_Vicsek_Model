@@ -2,7 +2,7 @@
 #Author: Sofia Raponi
 #Date: 05 October, 2022
 #
-#  tests
+#  Tests
 #
 #  Aim: To test funcions in Viscek_Model.py.
 #
@@ -30,12 +30,12 @@ def test_InitialConfiguration(N,L):
     assert all(i <= L for i in mod_y)
 
 
-@given(v0=st.floats(0.,10.,exclude_min=True), theta=st.floats(-np.pi,np.pi))
+@given(v0=st.floats(0,10,exclude_min=True), theta=st.floats(-np.pi,np.pi))
 def test_VelocityUpdate(v0,theta):
 
     vel = Vicsek_Model.VelocityUpdate(v0,theta)
 
-    # Test that the output has lenght 2
+    # Test that the output lenght is 2
     assert len(vel) == 2
 
     # Test if the velocity has constant module v0
@@ -52,26 +52,26 @@ def test_NeighborsMeanAngle(N,L):
 
     np.random.seed(3)
 
-    # Calculate the mean neighbors direction for each particle
+    # Calculate the mean neighbors direction for each particle with random R0 in [0,L]
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,L*np.random.rand())
-
-    # Test if all mean orientations are not out of range
-    mod_mean_theta = np.abs(mean_theta)
-    assert all(i <= np.pi for i in mod_mean_theta)
 
     # Test if the lenght of the output is equal to the number of particles
     assert len(mean_theta) == N
 
-    # Test that mean_theta is equal to the particle orientation when R0 is 0
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,0.)
+    # Test if all mean orientations are between -π and π
+    mod_mean_theta = np.abs(mean_theta)
+    assert all(i <= np.pi for i in mod_mean_theta)
+
+    # Test that mean_theta is equal to the particle orientation when R0 = 0
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,N,0)
     assert np.allclose(mean_theta,config[2])
 
 
-@given(eta=st.floats(0.,1.), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0.,1.,exclude_min=True), v0=st.floats(0.,10.,exclude_min=True), T=st.integers(50,1000))
+@given(eta=st.floats(0,1), N=st.integers(10,500), L = st.floats(1,50), dt=st.floats(0,1,exclude_min=True), v0=st.floats(0,10,exclude_min=True), T=st.integers(50,1000))
 @settings(max_examples = 1)
 def test_ConfigurationUpdate(N,L,v0,eta,dt,T):
 
-    # Generate an initial random particles confoguration
+    # Generate an initial random particles configuration
     config = Vicsek_Model.InitialConfiguration(N,L)
 
     np.random.seed(3)
@@ -84,7 +84,7 @@ def test_ConfigurationUpdate(N,L,v0,eta,dt,T):
 
     for i in range(T):
 
-        # Update the particles confoguration
+        # Update the particles configuration with random R0 in [0,L]
         config = Vicsek_Model.ConfigurationUpdate(config,vel,L*np.random.rand(),eta,N,L,dt)
 
         # Test if all particles are still inside the space of linear dimension L
@@ -115,7 +115,7 @@ def test_OrderParameter(N):
     phi_equal = Vicsek_Model.OrderParameter(theta_equal,N)
 
     # Test that the order parameter is 1 when all orientations are equal
-    assert np.isclose(phi_equal,1.0)
+    assert np.isclose(phi_equal,1)
 
     # Generate random orientations for the N particles
     theta = np.pi*(2*np.random.rand(N)-1)
