@@ -1,30 +1,40 @@
 # 2D Vicsek Model simulation
 
-The Vicsek model is a self-organized motion model that plays a key role in the study of active matter. This model shows a transition from the disordered movement of individuals within the group to collective behavior, caused only by interindividual forces of alignment, without attraction and repulsion. Its simple dynamic rule has been adopted as a starting point for many generalizations and variations that have been applied to a wide range of different problems, such as the collective behavior of large groups of animals. The goal of this project is to simulate the two-dimensional Vicsek model.
+The Vicsek model is a self-organized motion model that plays a key role in the study of active matter. This model shows a transition from the disordered movement of individuals within the group to collective behavior, caused only by interindividual forces of alignment, without attraction and repulsion. Its simple dynamic rule has been adopted as a starting point for many generalizations that have been applied to a wide range of different problems, such as the collective behavior of large groups of animals. 
 
-# Model definition
-The model describes the synchronous motion of a set of ![equation](https://latex.codecogs.com/svg.image?N) self-propelled Particles, i.e. provided with autonomous movement possibilities. These particles are represented by points in continuous motion on the plane, characterized by the position ![equation](https://latex.codecogs.com/svg.image?\textbf{r}_i(t)) and the velocity ![equation](https://latex.codecogs.com/svg.image?\textbf{v}_i(t)), with constant modulus ![equation](https://latex.codecogs.com/svg.image?v_0) and direction ![equation](https://latex.codecogs.com/svg.image?\textbf{s}_i(t)=(\cos(\theta_i(t)),\sin(\theta_i(t)))). The position of the ![equation](https://latex.codecogs.com/svg.image?i)-th particle is updated at each time step ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t) according to the following dynamic evolution equation: 
+The goal of this project is to simulate the two-dimensional Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
+
+## Command line syntax 
+
+```python Simulation.py settings.ini```
+
+```python Animation.py settings.ini```
+
+## Model definition
+The model describes the synchronous motion of ![equation](https://latex.codecogs.com/svg.image?N) self-propelled particles, characterized by the position ![equation](https://latex.codecogs.com/svg.image?\textbf{r}_i(t)) and the velocity ![equation](https://latex.codecogs.com/svg.image?\textbf{v}_i(t)), with constant modulus ![equation](https://latex.codecogs.com/svg.image?v_0) and direction ![equation](https://latex.codecogs.com/svg.image?\textbf{s}_i(t)=(\cos(\theta_i(t)),\sin(\theta_i(t)))). 
+
+The position of the ![equation](https://latex.codecogs.com/svg.image?i)-th particle is updated at each time step ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t) according to the following dynamic evolution equation: 
 
 ![equation](https://latex.codecogs.com/svg.image?\textbf{r}_i(t+\Delta&space;t)=\textbf{r}_i(t)&plus;\textbf{v}_i(t)\Delta&space;t=\textbf{r}_i(t)&plus;v_0\begin{pmatrix}\cos(\theta_i(t))&space;\\\sin(\theta_i(t))\end{pmatrix}\Delta&space;t)
 
-According to the basic idea of the model, particles tend to move in the same direction as their neighbors, therefore the angle that defines the direction of the ![equation](https://latex.codecogs.com/svg.image?i)-th particle ![equation](https://latex.codecogs.com/svg.image?\theta_i(t)) motion is determined, at each time step ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t), by the following update equation:
+Particles tend to move in the same direction as their neighbors, therefore the angle that defines the direction of the ![equation](https://latex.codecogs.com/svg.image?i)-th particle ![equation](https://latex.codecogs.com/svg.image?\theta_i(t)) motion is determined, at each time step ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t), by the following update equation:
 
-![equation](https://latex.codecogs.com/svg.image?\theta_i(t+\Delta&space;t)=Arg\left&space;[&space;\sum_{j=1}^{N}&space;n_{ij}(t)\textbf{s}_j(t)\right&space;]&plus;\eta_i(t))
+![equation](https://latex.codecogs.com/svg.image?\theta_i(t+\Delta&space;t)=Arg\left&space;[&space;\sum_{j=1}^{N}&space;n_{ij}(t)\textbf{s}_j(t)\right&space;]&plus;\eta\xi_i(t))
 
-Where the ![equation](https://latex.codecogs.com/svg.image?Arg) function returns the angle that defines the average direction of the velocity of the particles (including the ![equation](https://latex.codecogs.com/svg.image?i)-th) that are within a circle of radius ![equation](https://latex.codecogs.com/svg.image?R_0) centered in the reference particle. The connectivity matrix ![equation](https://latex.codecogs.com/svg.image?n_{ij}(t)) is in fact defined as:
+Where the ![equation](https://latex.codecogs.com/svg.image?Arg) function returns the average direction of the velocity of the particles (including the ![equation](https://latex.codecogs.com/svg.image?i)-th) that are within a circle of radius ![equation](https://latex.codecogs.com/svg.image?R_0) centered in the reference particle. The connectivity matrix ![equation](https://latex.codecogs.com/svg.image?n_{ij}(t)) is in fact defined as:
 
 ![equation](https://latex.codecogs.com/svg.image?n_{ij}(t)=\begin{cases}&&space;1&space;\text{&space;if&space;}|\textbf{r}_i(t)-\textbf{r}_j(t)|<R_0\\\\&&space;0&space;\text{&space;if&space;}|\textbf{r}_i(t)-\textbf{r}_j(t)|>R_0\end{cases}&space;)
 
-The alignment is hindered by a noise term ![equation](https://latex.codecogs.com/svg.image?\eta_{i}(t)) uniformly distributed in the interval ![equation](https://latex.codecogs.com/svg.image?[-\eta/2,\eta/2]), with amplitude ![equation](https://latex.codecogs.com/svg.image?\eta\in[0,1]).
+The alignment is hindered by a noise term ![equation](https://latex.codecogs.com/svg.image?\eta\xi_{i}(t)) defined by an amplitude ![equation](https://latex.codecogs.com/svg.image?\eta\in[0,1]) and a variable number ![equation](https://latex.codecogs.com/svg.image?\xi(t)\in[-\pi,\pi]).
 
 If the polar alignment term is strong enough to overcome the noise effect, the system develops a global orientation order and therefore a collective movement. This process can be studied by monitoring the polar order parameter ![equation](https://latex.codecogs.com/svg.image?\varphi(t)), defined as the modulus of the mean direction of motion of the entire system of particles:
 
 ![equation](https://latex.codecogs.com/svg.image?\varphi(t)=\frac{1}{N}\left|\sum_{i=1}^{N}&space;\textbf{s}_i(t)\right|)
 
-The order parameter is approximately null if the directions of motion of the individual particles are distributed randomly, as the latter tend to cancel each other out in the sum; while for the phase of coherent motion, with an ordered direction of the velocities, it assumes a finite and approximately unitary value.
+The order parameter is approximately null if the directions of motion of the individual particles are distributed randomly; while for the phase of coherent motion, with an ordered direction of the velocities, it assumes a finite and approximately unitary value.
 
-# Model simulation
-The aim of this project is to simulate the 2D Vicsek model in order to visualize the phase transition from random to ordered motion of particles. To do this, once the parameters of the model have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
+## Model simulation
+In order to simulate the 2D Vicsek Mosdel, once the parameters of the model have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
 
 The steps that the user must follow to perform the simulation and obtain a visualization of both the particles motion and the evolution over time of the order parameter are listed below:
 
@@ -34,7 +44,7 @@ The steps that the user must follow to perform the simulation and obtain a visua
 
 3. The user has to launch the [Animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Animation.py) file that loads the data from the data folder and creates a real time figure of the particles motion and the evolution of the order parameter as the transition to collective motion goes on. The figure is then automatically saved in the project folder. To launch the [Animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Animation.py) file from command line interface the user must type ```python Animation.py <name of configuration file>```, where in this case the name of the configuration file is *settings.ini*.
 
-# Project structure
+## Project structure
 
 The project is formed by 5 files:
 
@@ -49,16 +59,16 @@ defined in [Vicsek_Model](https://github.com/sofiraponi/2D_Vicsek_Model/blob/mai
 
 5. [Animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Animation.py) is a .py file that imports the data from the data folder and creates, using mathplotlib.animation.FuncAnimated, a figure formed by a real time visualization of the particles motion and a real time plot of the order parameter. The figure is saved as animation.gif in the project folder.
 
-# Simulation examples
+## Simulation examples
 
 Below are shown three examples of simulation obtained with different noise amplitude ![equation](https://latex.codecogs.com/svg.image?\eta) and fixed all the other parameters. In particular, [animation_1](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif) is obtained using [settings_1](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/settings_1.ini) configuration file in which is set ![equation](https://latex.codecogs.com/svg.image?\eta&space;=&space;0.1), [animation_2](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif) is obtained using [settings_2](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/settings_2.ini) as configuration file in which is set ![equation](https://latex.codecogs.com/svg.image?\eta&space;=&space;0.5) and [animation_3](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif) is obtained using [settings_3](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/settings_3.ini) configuration file in which is set ![equation](https://latex.codecogs.com/svg.image?\eta&space;=&space;0.9).
-As expected, as the noise amplitude increases, the transition to the collective motion of particles is more and more hampered. In fact, it is noted that for greater ![equation](https://latex.codecogs.com/svg.image?\eta) the order parameter reaches slower an almost unitary value and it is subject to greater fluctuations caused by the presence of a strong noise component.
+As expected, as the noise amplitude increases, the transition to the collective motion of particles is more and more hampered.
 
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif)
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif)
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif)
 
-## Command line syntax 
+### Examples command line syntax 
 
 Animation 1: ```python Simulation.py settings_1.ini``` , ```python Animation.py settings_1.ini```
 
