@@ -82,7 +82,7 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
     vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
     # Calculate the initial order parameter
-    initphi = Vicsek_Model.OrderParameter(config[2],num_part)
+    initphi = Vicsek_Model.OrderParameter(config[2])
 
     for i in range(num_steps):
 
@@ -99,7 +99,7 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
         vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
     # Calculate the final order parameter
-    finalphi = Vicsek_Model.OrderParameter(config[2],num_part)
+    finalphi = Vicsek_Model.OrderParameter(config[2])
 
     # Test the phase transition
     assert finalphi > initphi
@@ -114,7 +114,7 @@ def test_OrderParameter(num_part):
     theta_equal=np.repeat(np.pi*(2*np.random.rand()-1),num_part)
 
     # Calculate the order parameter
-    phi_equal = Vicsek_Model.OrderParameter(theta_equal,num_part)
+    phi_equal = Vicsek_Model.OrderParameter(theta_equal)
 
     # Test that the order parameter is 1 when all orientations are equal
     assert np.isclose(phi_equal,1)
@@ -123,7 +123,7 @@ def test_OrderParameter(num_part):
     theta = np.pi*(2*np.random.rand(num_part)-1)
 
     # Calculate the order parameter
-    phi = Vicsek_Model.OrderParameter(theta,num_part)
+    phi = Vicsek_Model.OrderParameter(theta)
 
     # Test that the order parameter is between 0 and 1 when orientations are random
     mod_phi = np.abs(phi)

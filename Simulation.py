@@ -52,7 +52,7 @@ position_data[0] = config[0], config[1]
 theta_data[0] = config[2]
 
 # Calculate initial order parameter
-phi_data[0] = Vicsek_Model.OrderParameter(config[2],N)
+phi_data[0] = Vicsek_Model.OrderParameter(config[2])
 
 # Main loop
 for i in range(Ns):
@@ -64,7 +64,7 @@ for i in range(Ns):
     vel = Vicsek_Model.VelocityCalculation(v0,config[2])
 
     # Calculate order parameter
-    phi_data[i+1]=Vicsek_Model.OrderParameter(config[2],N)
+    phi_data[i+1]=Vicsek_Model.OrderParameter(config[2])
 
     # Save current configuration
     position_data[i+1] = config[0], config[1]

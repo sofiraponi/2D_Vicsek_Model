@@ -105,7 +105,7 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
         time_step: time step
 
     Returns:
-        Updated configuration of the particles (config).   
+        Updated configuration of the particles (config).
     """
 
     # Update particles position
@@ -127,14 +127,13 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
 
     return config
 
-def OrderParameter(theta,num_part):
+def OrderParameter(theta):
 
     """
     This function calculates the order parameter.
 
     Parameters
         theta: particles orientation
-        num_part: number of particles
 
     Returns:
         Order parameter phi.
@@ -142,7 +141,7 @@ def OrderParameter(theta,num_part):
 
     sx = np.sum(np.cos(theta))
     sy = np.sum(np.sin(theta))
-    phi = ((sx)**2 + (sy)**2)**(0.5)/num_part
+    phi = ((sx)**2 + (sy)**2)**(0.5)/len(theta)
 
     phi=round(phi,10)
 
