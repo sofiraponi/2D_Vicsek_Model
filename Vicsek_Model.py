@@ -58,7 +58,7 @@ def VelocityCalculation(vel_mod,theta):
 
     return vel
 
-def NeighborsMeanAngle(config,num_part,int_radius):
+def NeighborsMeanAngle(config,int_radius):
 
     """
     This function calculates the mean orientation of the neighbor partcicles within a circle of radius int_radius around each of the particles.
@@ -74,12 +74,12 @@ def NeighborsMeanAngle(config,num_part,int_radius):
 
     mean_theta=config[2]
 
-    for i in range(0,num_part):
+    for i in range(0,len(config[2])):
 
         neighbors=[]
 
         # Find the neighbors of each particle within the interaction radius int_radius
-        for j in range(0,num_part):
+        for j in range(0,len(config[2])):
             if (config[0][i] - config[0][j])**2+(config[1][i] - config[1][j])**2 <= int_radius**2:
                 neighbors.append(j)
 
@@ -120,7 +120,7 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
     assert all(i < space_dim and i >= 0 for i in config[1])
 
     # Calculate the mean orientation of particles within R0
-    mean_theta =  NeighborsMeanAngle(config,num_part,int_radius)
+    mean_theta =  NeighborsMeanAngle(config,int_radius)
 
     # Update particles orientation
     config[2] = mean_theta + noise_ampl*(np.random.rand(num_part)-0.5)

@@ -55,7 +55,7 @@ def test_NeighborsMeanAngle(num_part,space_dim):
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Calculate the mean neighbors direction for each particle with random interaction radius in [0,space_dim]
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,num_part,space_dim*np.random.rand())
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,space_dim*np.random.rand())
 
     # Test if the lenght of the output is equal to the number of particles
     assert len(mean_theta) == num_part
@@ -65,7 +65,7 @@ def test_NeighborsMeanAngle(num_part,space_dim):
     assert all(i <= np.pi for i in mod_mean_theta)
 
     # Test that mean_theta is equal to the particle orientation when R0 = 0
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,num_part,0)
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,0)
     assert np.allclose(mean_theta,config[2])
 
 
