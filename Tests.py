@@ -87,7 +87,7 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
     for i in range(num_steps):
 
         # Update the particles configuration with random interaction radius in [0,space_dim]
-        config = Vicsek_Model.ConfigurationUpdate(config,vel,space_dim*np.random.rand(),noise_ampl,num_part,space_dim,time_step)
+        config = Vicsek_Model.ConfigurationUpdate(config,vel,space_dim*np.random.rand(),noise_ampl,space_dim,time_step)
 
         # Test if all particles are still inside the space of linear dimension L
         mod_x = np.abs(config[0])

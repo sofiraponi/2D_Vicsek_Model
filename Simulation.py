@@ -58,7 +58,7 @@ phi_data[0] = Vicsek_Model.OrderParameter(config[2])
 for i in range(Ns):
 
     # Update configuration
-    config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,N,L,dt)
+    config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,L,dt)
 
     # Update velocity
     vel = Vicsek_Model.VelocityCalculation(v0,config[2])

@@ -89,7 +89,7 @@ def NeighborsMeanAngle(config,int_radius):
 
     return mean_theta
 
-def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time_step):
+def ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step):
 
     """
     This function updates the particles position and orienation.
@@ -99,7 +99,6 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
         vel: particles velocity
         int_radius: interaction radius
         noise_ampl: noise amplituse
-        num_part: number of particles
         space_dim: linear dimension of space
         time_step: time step
 
@@ -122,7 +121,7 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
     mean_theta =  NeighborsMeanAngle(config,int_radius)
 
     # Update particles orientation
-    config[2] = mean_theta + noise_ampl*(np.random.rand(num_part)-0.5)
+    config[2] = mean_theta + noise_ampl*(np.random.rand(len(config[2]))-0.5)
 
     return config
 
