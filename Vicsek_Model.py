@@ -65,7 +65,6 @@ def NeighborsMeanAngle(config,int_radius):
 
     Parameters
         config: previous particles configuration
-        num_part: number of particles
         int_radius: interaction radius
 
     Returns:
