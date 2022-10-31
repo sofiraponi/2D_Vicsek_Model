@@ -96,7 +96,7 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
         assert all(i <= space_dim for i in mod_y)
 
         # Update the particles velocity
-        vel = Vicsek_Model.VelocityUpdate(vel_mod,config[2])
+        vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
     # Calculate the final order parameter
     finalphi = Vicsek_Model.OrderParameter(config[2],num_part)
