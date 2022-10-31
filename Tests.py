@@ -108,29 +108,32 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
     assert finalphi >= initphi
 
 
-@given(num_part=st.integers(10,500))
-def test_OrderParameter(num_part):
+def test_OrderParameter():
 
-    np.random.seed(3)
-
-    # Generate all equal orientations
-    theta_equal=np.repeat(np.pi*(2*np.random.rand()-1),num_part)
-
-    # Calculate the order parameter
-    phi_equal = Vicsek_Model.OrderParameter(theta_equal)
-
-    # Test that the order parameter is 1 when all orientations are equal
-    assert np.isclose(phi_equal,1)
-
-    # Generate random orientations
-    theta = np.pi*(2*np.random.rand(num_part)-1)
+    # All equal orientations
+    theta=np.repeat(1.,100)
 
     # Calculate the order parameter
     phi = Vicsek_Model.OrderParameter(theta)
 
-    # Test that the order parameter is between 0 and 1 when orientations are random
-    mod_phi = np.abs(phi)
-    assert mod_phi <= 1
+    # Test that the order parameter is 1 when all orientations are equal
+    assert np.isclose(phi,1)
+
+    # Random orientations
+    theta = np.array([-0.5,1.5,1.8,2.2,-1.,0.7,2.3,2.1,-0.7,2.5])
+
+    # Calculate the order parameter
+    phi = Vicsek_Model.OrderParameter(theta)
+
+    assert np.isclose(phi,0.3673557583)
+
+    # Opposite orientations
+    theta = np.array([-0.5,np.pi-0.5,-1.8,np.pi-1.8,-3.,np.pi-3.,-2.3,np.pi-2.3,-0.7,np.pi-0.7])
+
+    # Calculate the order parameter
+    phi = Vicsek_Model.OrderParameter(theta)
+
+    assert np.isclose(phi,0)
 
 
 if __name__ == "main":
