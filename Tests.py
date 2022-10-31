@@ -23,13 +23,16 @@ def test_InitialConfiguration(num_part,space_dim):
     x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Test if the lenght of x, y and theta is num_part
-    assert len(x) == len(y) == len(theta) == num_part
+    assert len(x) == num_part
+    assert len(y) == num_part
+    assert len(theta) == num_part
 
     # Test if all particles are inside the space of linear dimension space_dim
-    mod_x = np.abs(x)
-    mod_y = np.abs(y)
-    assert all(i <= space_dim for i in mod_x)
-    assert all(i <= space_dim for i in mod_y)
+    assert all(i < space_dim and i >= 0 for i in x)
+    assert all(i < space_dim and i >= 0 for i in y)
+
+    # Test that theta is between -π and π
+    assert all(i <= np.pi and i >= -np.pi for i in theta)
 
 
 @given(vel_mod=st.floats(0,10,exclude_min=True), theta=st.floats(-np.pi,np.pi))
