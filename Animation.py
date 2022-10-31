@@ -23,19 +23,19 @@ phi = np.load('./data/phi.npy')
 position = np.load('./data/position.npy')
 theta = np.load('./data/theta.npy')
 
-v0 = float(config['parameters']['v0'])    # Velocity modulus
-eta = float(config['parameters']['eta'])  # Noise amplitude
-R0 = float(config['parameters']['R0'])    # Interaction radius
-dt = float(config['parameters']['dt'])    # Time step
-N = int(config['parameters']['N'])        # Number of particles
-L = float(config['parameters']['L'])      # Linear dimension of system space
-T = int(config['parameters']['T'])        # Number of steps
+v0 = float(config['parameters']['vel_mod'])       # Velocity modulus
+eta = float(config['parameters']['noise_ampl'])   # Noise amplitude
+R0 = float(config['parameters']['int_radius'])    # Interaction radius
+dt = float(config['parameters']['time_step'])     # Time step
+N = int(config['parameters']['num_part'])         # Number of particles
+L = float(config['parameters']['space_dim'])      # Linear dimension of system space
+Ns = int(config['parameters']['num_steps'])       # Number of steps
 
 # Create figure
 fig, (ax1,ax2) = plt.subplots(1,2, figsize=(10, 5))
 fig.suptitle("v$_0$ = {}, η = {}, R$_0$ = {}, dt = {}, N = {}".format(v0,eta,R0,dt,N))
 
-t = np.linspace(0, T+1, T+1)
+t = np.linspace(0, Ns+1, Ns+1)
 
 # Prepare order parameter real time plot
 line, = ax2.plot(t, phi, color='r')
@@ -54,10 +54,10 @@ def animate(i):
 
     line.set_data(t[:i], phi[:i])
 
-animation = FuncAnimation(fig, animate, frames=T+1, interval=50, repeat=False)
+animation = FuncAnimation(fig, animate, frames= Ns+1, interval=50, repeat=False)
 
 plt.show()
 
 # Save animation
-writer = PillowWriter(fps = T+1)
+writer = PillowWriter(fps = Ns+1)
 animation.save('animation.gif', writer = writer)

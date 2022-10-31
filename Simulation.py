@@ -19,23 +19,23 @@ config=configparser.ConfigParser()
 config.read(sys.argv[1])
 
 # Import model parameters
-v0 = float(config['parameters']['v0'])    # Velocity modulus
-eta = float(config['parameters']['eta'])  # Noise amplitude
-R0 = float(config['parameters']['R0'])    # Interaction radius
-dt = float(config['parameters']['dt'])    # Time step
-N = int(config['parameters']['N'])        # Number of particles
-L = float(config['parameters']['L'])      # Linear dimension of system space
-T = int(config['parameters']['T'])        # Number of steps
+v0 = float(config['parameters']['vel_mod'])       # Velocity modulus
+eta = float(config['parameters']['noise_ampl'])   # Noise amplitude
+R0 = float(config['parameters']['int_radius'])    # Interaction radius
+dt = float(config['parameters']['time_step'])     # Time step
+N = int(config['parameters']['num_part'])         # Number of particles
+L = float(config['parameters']['space_dim'])      # Linear dimension of system space
+Ns = int(config['parameters']['num_steps'])        # Number of steps
 
 # Import local paths
-phi_path = config['paths']['phi']
+phi_path = config['paths']['order_param']
 position_path = config['paths']['position']
-theta_path = config['paths']['theta']
+theta_path = config['paths']['orientation']
 
 # Define data arrays
-phi_data=np.empty(T+1)
-position_data=np.empty([T+1,2,N])
-theta_data=np.empty([T+1,1,N])
+phi_data=np.empty(Ns+1)
+position_data=np.empty([Ns+1,2,N])
+theta_data=np.empty([Ns+1,1,N])
 
 # Calculate initial configuration (position and orientation)
 config = Vicsek_Model.InitialConfiguration(N,L)
@@ -51,7 +51,7 @@ theta_data[0] = config[2]
 phi_data[0] = Vicsek_Model.OrderParameter(config[2],N)
 
 # Main loop
-for i in range(T):
+for i in range(Ns):
 
     # Update configuration
     config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,N,L,dt)
