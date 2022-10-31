@@ -25,12 +25,16 @@ R0 = float(config['parameters']['int_radius'])    # Interaction radius
 dt = float(config['parameters']['time_step'])     # Time step
 N = int(config['parameters']['num_part'])         # Number of particles
 L = float(config['parameters']['space_dim'])      # Linear dimension of system space
-Ns = int(config['parameters']['num_steps'])        # Number of steps
+Ns = int(config['parameters']['num_steps'])       # Number of steps
+seed = int(config['parameters']['seed'])          # Random seed
 
 # Import local paths
 phi_path = config['paths']['order_param']
 position_path = config['paths']['position']
 theta_path = config['paths']['orientation']
+
+# Initialization
+np.random.seed(seed)
 
 # Define data arrays
 phi_data=np.empty(Ns+1)

@@ -27,9 +27,6 @@ def InitialConfiguration(num_part,space_dim):
         ValueError if the initial coordinates (x,y) of the particles are out of the system space.
     """
 
-    # Initialization
-    np.random.seed(3)
-
     # Generate random coordinates of particles between 0 and space_dim
     x = np.random.rand(num_part)*space_dim
     y = np.random.rand(num_part)*space_dim

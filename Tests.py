@@ -18,6 +18,8 @@ from hypothesis import given, settings
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_InitialConfiguration(num_part,space_dim):
 
+    np.random.seed(3)
+
     x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Test if the lenght of x, y and theta is num_part
@@ -47,10 +49,10 @@ def test_VelocityUpdate(vel_mod,theta):
 @settings(max_examples = 10, deadline=1000)
 def test_NeighborsMeanAngle(num_part,space_dim):
 
+    np.random.seed(3)
+
     # Generate a random particles configuration
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
-
-    np.random.seed(3)
 
     # Calculate the mean neighbors direction for each particle with random interaction radius in [0,space_dim]
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,num_part,space_dim*np.random.rand())
@@ -71,10 +73,10 @@ def test_NeighborsMeanAngle(num_part,space_dim):
 @settings(max_examples = 1)
 def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num_steps):
 
+    np.random.seed(3)
+
     # Generate an initial random particles configuration
     config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
-
-    np.random.seed(3)
 
     # Calculate the particles velocity
     vel = Vicsek_Model.VelocityUpdate(vel_mod,config[2])
