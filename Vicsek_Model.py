@@ -23,19 +23,14 @@ def InitialConfiguration(num_part,space_dim):
     Returns:
         Initial configuration of the particles.
 
-    Raise:
-        ValueError if the initial coordinates (x,y) of the particles are out of the system space.
     """
 
     # Generate random coordinates of particles between 0 and space_dim
     x = np.random.rand(num_part)*space_dim
     y = np.random.rand(num_part)*space_dim
 
-    if not all(i < space_dim and i >= 0 for i in x):
-        raise ValueError('The x coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(space_dim))
-
-    if not all(i < space_dim and i >= 0 for i in y):
-        raise ValueError('The y coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(space_dim))
+    assert all(i < space_dim and i >= 0 for i in x)
+    assert all(i < space_dim and i >= 0 for i in y)
 
     # Generate random orientation of particles between -π and π
     theta = np.pi*(2*np.random.rand(num_part)-1)
@@ -125,11 +120,8 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
     config[0] = config[0] % space_dim
     config[1] = config[1] % space_dim
 
-    if not all(i < space_dim and i >= 0 for i in config[0]):
-        raise ValueError('The x coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(space_dim))
-
-    if not all(i < space_dim and i >= 0 for i in config[1]):
-        raise ValueError('The y coordinate of each particle must be between 0 and {} but at least one is out of range!'.format(space_dim))
+    assert all(i < space_dim and i >= 0 for i in config[0])
+    assert all(i < space_dim and i >= 0 for i in config[1])
 
     # Calculate the mean orientation of particles within R0
     mean_theta =  NeighborsMeanAngle(config,num_part,int_radius)
@@ -159,7 +151,9 @@ def OrderParameter(theta,num_part):
     sy = np.sum(np.sin(theta))
     phi = ((sx)**2 + (sy)**2)**(0.5)/num_part
 
-    if not phi >= 0 and phi <= 1:
-        raise ValueError('The order parameter must be between 0 and 1 but is {}!'.format(phi))
+    phi=round(phi,10)
+
+    assert phi >= 0
+    assert phi <= 1
 
     return phi
