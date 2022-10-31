@@ -44,10 +44,10 @@ def InitialConfiguration(num_part,space_dim):
 
     return config
 
-def VelocityUpdate(vel_mod,theta):
+def VelocityCalculation(vel_mod,theta):
 
     """
-    This funtion updates the particles velocity.
+    This funtion calculates the particles velocity.
 
     Parameters
         vel_mod : velocity modulus

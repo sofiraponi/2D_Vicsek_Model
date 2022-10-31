@@ -33,9 +33,9 @@ def test_InitialConfiguration(num_part,space_dim):
 
 
 @given(vel_mod=st.floats(0,10,exclude_min=True), theta=st.floats(-np.pi,np.pi))
-def test_VelocityUpdate(vel_mod,theta):
+def test_VelocityCalculation(vel_mod,theta):
 
-    vel = Vicsek_Model.VelocityUpdate(vel_mod,theta)
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
 
     # Test that the output lenght is 2
     assert len(vel) == 2
@@ -79,7 +79,7 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
     config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Calculate the particles velocity
-    vel = Vicsek_Model.VelocityUpdate(vel_mod,config[2])
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
     # Calculate the initial order parameter
     initphi = Vicsek_Model.OrderParameter(config[2],num_part)
