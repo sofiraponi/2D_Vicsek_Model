@@ -21,8 +21,7 @@ def InitialConfiguration(num_part,space_dim):
         space_dim : linear dimension of space
 
     Returns:
-        Initial configuration of the particles.
-
+        Initial configuration of the particles (config).
     """
 
     # Generate random coordinates of particles between 0 and space_dim
@@ -106,10 +105,7 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,num_part,space_dim,time
         time_step: time step
 
     Returns:
-        Updated configuration of the particles.
-
-    Raise:
-        ValueError if the updated coordinates (x,y) of the particles are out of the system space.
+        Updated configuration of the particles (config).   
     """
 
     # Update particles position
@@ -142,9 +138,6 @@ def OrderParameter(theta,num_part):
 
     Returns:
         Order parameter phi.
-
-    Raise:
-        ValueError if the order parameter is less than 0 or greater than 1.
     """
 
     sx = np.sum(np.cos(theta))
