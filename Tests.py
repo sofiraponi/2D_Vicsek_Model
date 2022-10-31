@@ -40,22 +40,22 @@ def test_VelocityCalculation(vel_mod,theta):
     # Test that the output lenght is 2
     assert len(vel) == 2
 
-    # Test if the velocity has constant module v0
+    # Test if the velocity has constant module
     mod_square = vel[0]**2+vel[1]**2
     assert np.isclose(mod_square,vel_mod**2)
 
 
-@given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
+@given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
 @settings(max_examples = 10, deadline=1000)
-def test_NeighborsMeanAngle(num_part,space_dim):
+def test_NeighborsMeanAngle(num_part,space_dim,int_radius):
 
     np.random.seed(3)
 
     # Generate a random particles configuration
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
-    # Calculate the mean neighbors direction for each particle with random interaction radius in [0,space_dim]
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,space_dim*np.random.rand())
+    # Calculate the mean neighbors direction for each particle with random interaction radius
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius)
 
     # Test if the lenght of the output is equal to the number of particles
     assert len(mean_theta) == num_part
@@ -64,14 +64,14 @@ def test_NeighborsMeanAngle(num_part,space_dim):
     mod_mean_theta = np.abs(mean_theta)
     assert all(i <= np.pi for i in mod_mean_theta)
 
-    # Test that mean_theta is equal to the particle orientation when R0 = 0
+    # Test that mean_theta is equal to the particle orientation when int_radius = 0
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,0)
     assert np.allclose(mean_theta,config[2])
 
 
-@given(noise_ampl=st.floats(0,1), num_part=st.integers(10,500), space_dim = st.floats(1,50), time_step=st.floats(0,1,exclude_min=True), vel_mod=st.floats(0,10,exclude_min=True), num_steps=st.integers(50,1000))
-@settings(max_examples = 1)
-def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num_steps):
+@given(int_radius=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1), num_part=st.integers(10,500), space_dim = st.floats(1,50), time_step=st.floats(0,1,exclude_min=True), vel_mod=st.floats(0,10,exclude_min=True), num_steps=st.integers(50,1000))
+@settings(max_examples = 1, deadline=1000)
+def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num_steps,int_radius):
 
     np.random.seed(3)
 
@@ -86,10 +86,10 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
 
     for i in range(num_steps):
 
-        # Update the particles configuration with random interaction radius in [0,space_dim]
-        config = Vicsek_Model.ConfigurationUpdate(config,vel,space_dim*np.random.rand(),noise_ampl,space_dim,time_step)
+        # Update the particles configuration with random interaction radius
+        config = Vicsek_Model.ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
 
-        # Test if all particles are still inside the space of linear dimension L
+        # Test if all particles are still inside the space of linear dimension space_dim
         mod_x = np.abs(config[0])
         mod_y = np.abs(config[1])
         assert all(i <= space_dim for i in mod_x)
@@ -102,7 +102,7 @@ def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num
     finalphi = Vicsek_Model.OrderParameter(config[2])
 
     # Test the phase transition
-    assert finalphi > initphi
+    assert finalphi >= initphi
 
 
 @given(num_part=st.integers(10,500))
@@ -110,7 +110,7 @@ def test_OrderParameter(num_part):
 
     np.random.seed(3)
 
-    # Generate all equal orientations for the N particles
+    # Generate all equal orientations
     theta_equal=np.repeat(np.pi*(2*np.random.rand()-1),num_part)
 
     # Calculate the order parameter
@@ -119,7 +119,7 @@ def test_OrderParameter(num_part):
     # Test that the order parameter is 1 when all orientations are equal
     assert np.isclose(phi_equal,1)
 
-    # Generate random orientations for the N particles
+    # Generate random orientations
     theta = np.pi*(2*np.random.rand(num_part)-1)
 
     # Calculate the order parameter
