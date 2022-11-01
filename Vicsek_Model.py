@@ -9,7 +9,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import math
+from scipy.spatial import KDTree
 
 def InitialConfiguration(num_part,space_dim):
 
@@ -58,6 +58,26 @@ def VelocityCalculation(vel_mod,theta):
 
     return vel
 
+def FindNeighbors(positions,int_radius,particle):
+
+    """
+    This function finds the neighbors within a circle of radius int_radius aroud a reference particle.
+
+    Parameters:
+        positions: particles positions (N X 2 array)
+        int_radius: interaction int_radius
+        particle: reference particle position
+
+    Returns:
+    List of neighbors indeces inds.
+    """
+
+    tree=KDTree(positions)
+    inds = tree.query_ball_point(particle,int_radius)
+    inds=inds[0]
+
+    return inds
+
 def NeighborsMeanAngle(config,int_radius):
 
     """
@@ -73,14 +93,12 @@ def NeighborsMeanAngle(config,int_radius):
 
     mean_theta=config[2]
 
-    for i in range(0,len(config[2])):
+    pos=np.array([config[0],config[1]]).T
 
-        neighbors=[]
+    for i in range(0,len(pos)):
 
         # Find the neighbors of each particle within the interaction radius int_radius
-        for j in range(0,len(config[2])):
-            if (config[0][i] - config[0][j])**2+(config[1][i] - config[1][j])**2 <= int_radius**2:
-                neighbors.append(j)
+        neighbors = FindNeighbors(pos,int_radius,[pos[i]])
 
         # Calculate the mean orientation of the neighbor particles within int_radius
         mean_cos = np.mean(np.cos(config[2][neighbors]))
