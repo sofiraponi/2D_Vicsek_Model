@@ -29,7 +29,7 @@ def test_InitialConfigurationLenght(num_part,space_dim):
 
 
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
-def test_InitialConfigurationRange(num_part,space_dim):
+def test_InitialPositionRange(num_part,space_dim):
 
     np.random.seed(3)
 
@@ -38,6 +38,14 @@ def test_InitialConfigurationRange(num_part,space_dim):
     # Test if all particles are inside the space of linear dimension space_dim
     assert all(i < space_dim and i >= 0 for i in x)
     assert all(i < space_dim and i >= 0 for i in y)
+    
+
+@given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
+def test_InitialOrientationRange(num_part,space_dim):
+
+    np.random.seed(3)
+
+    x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Test that theta is between -π and π
     assert all(i <= np.pi and i >= -np.pi for i in theta)
