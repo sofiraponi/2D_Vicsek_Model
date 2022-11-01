@@ -80,6 +80,63 @@ def test_VelocityCalculation_ConstantModulus(vel_mod):
     assert all(np.isclose(i,vel_mod**2) for i in mod_square)
 
 
+def test_FindNeighbors():
+
+    space_dim=10
+    int_radius=1.5
+
+    # Set of 10 particles inside the system space
+    positions=([[1,4],[1,7],[4,7],[7,5],[8,6],[7,8],[6,8],[6,4],[5,2],[1,8]])
+
+    # Test the neighbors within a the interaction radius
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [1,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [2]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[3]],space_dim) == [3,4,7]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[4]],space_dim) == [3,4]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[5]],space_dim) == [5,6]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[6]],space_dim) == [5,6]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[7]],space_dim) == [3,7]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[8]],space_dim) == [8]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[9]],space_dim) == [1,9]
+
+
+def test_FindNeighbors_BoundaryConditions():
+
+    space_dim=10
+    int_radius=1
+
+    # Set of 4 particles near the boders of the system space
+    positions=np.array([[0.5,5],[5,9.5],[9.5,5],[5,0.5]])
+
+    # Test the satisfaction of periodic boundary conditions
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0,2]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [1,3]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [0,2]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[3]],space_dim) == [1,3]
+
+
+def test_FindNeighbors_NullRadius():
+
+    space_dim=10
+    int_radius=0
+
+    #Set of 10 particles inside the system space
+    positions=([[7,5],[1,8],[7,8],[2,9],[7,7],[7,9],[8,4],[2,6],[4,3],[0,7]])
+
+    # Test that each particles is the only neighbors of itself if the interaction radius is null
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [1]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [2]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[3]],space_dim) == [3]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[4]],space_dim) == [4]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[5]],space_dim) == [5]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[6]],space_dim) == [6]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[7]],space_dim) == [7]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[8]],space_dim) == [8]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[9]],space_dim) == [9]
+
+
 @given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
 @settings(max_examples = 10, deadline=1000)
 def test_NeighborsMeanAngle(num_part,space_dim,int_radius):
@@ -90,7 +147,7 @@ def test_NeighborsMeanAngle(num_part,space_dim,int_radius):
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Calculate the mean neighbors direction for each particle with random interaction radius
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius)
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
 
     # Test if the lenght of the output is equal to the number of particles
     assert len(mean_theta) == num_part
@@ -100,7 +157,7 @@ def test_NeighborsMeanAngle(num_part,space_dim,int_radius):
     assert all(i <= np.pi for i in mod_mean_theta)
 
     # Test that mean_theta is equal to the particle orientation when int_radius = 0
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,0)
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,0,space_dim)
     assert np.allclose(mean_theta,config[2])
 
 
