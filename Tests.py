@@ -44,7 +44,7 @@ def test_InitialConfigurationRange(num_part,space_dim):
 
 
 @given(vel_mod=st.floats(0,10,exclude_min=True), theta=st.floats(-np.pi,np.pi))
-def test_VelocityCalculation(vel_mod,theta):
+def test_VelocityCalculation_SingleTheta(vel_mod,theta):
 
     vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
 
@@ -54,6 +54,19 @@ def test_VelocityCalculation(vel_mod,theta):
     # Test if the velocity has constant module
     mod_square = vel[0]**2+vel[1]**2
     assert np.isclose(mod_square,vel_mod**2)
+
+
+@given(vel_mod=st.floats(0,10,exclude_min=True))
+def test_VelocityCalculation_ThetaVector(vel_mod):
+
+    # Vector of random orientations
+    theta = np.array([-1.5,0.5,2.8,1.2,-3.,1.7,0.3,1.1,-2.7,1.5])
+
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
+
+    # Test if the velocity of each particle has constant module
+    mod_square = vel[0]**2+vel[1]**2
+    assert all(np.isclose(i,vel_mod**2) for i in mod_square)
 
 
 @given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
