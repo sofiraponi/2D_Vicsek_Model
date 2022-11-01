@@ -20,12 +20,14 @@ def test_InitialConfigurationLenght(num_part,space_dim):
 
     np.random.seed(3)
 
-    x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
+    config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    assert len(config) == 3
 
     # Test if the lenght of x, y and theta is num_part
-    assert len(x) == num_part
-    assert len(y) == num_part
-    assert len(theta) == num_part
+    assert len(config[0]) == num_part
+    assert len(config[1]) == num_part
+    assert len(config[2]) == num_part
 
 
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
@@ -33,42 +35,43 @@ def test_InitialPositionRange(num_part,space_dim):
 
     np.random.seed(3)
 
-    x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
+    config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Test if all particles are inside the space of linear dimension space_dim
-    assert all(i < space_dim and i >= 0 for i in x)
-    assert all(i < space_dim and i >= 0 for i in y)
-    
+    assert all(i < space_dim and i >= 0 for i in config[0])
+    assert all(i < space_dim and i >= 0 for i in config[1])
+
 
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_InitialOrientationRange(num_part,space_dim):
 
     np.random.seed(3)
 
-    x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
+    config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Test that theta is between -π and π
-    assert all(i <= np.pi and i >= -np.pi for i in theta)
-
-
-@given(vel_mod=st.floats(0,10,exclude_min=True), theta=st.floats(-np.pi,np.pi))
-def test_VelocityCalculation_SingleTheta(vel_mod,theta):
-
-    vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
-
-    # Test that the output lenght is 2
-    assert len(vel) == 2
-
-    # Test if the velocity has constant module
-    mod_square = vel[0]**2+vel[1]**2
-    assert np.isclose(mod_square,vel_mod**2)
+    assert all(i <= np.pi and i >= -np.pi for i in config[2])
 
 
 @given(vel_mod=st.floats(0,10,exclude_min=True))
-def test_VelocityCalculation_ThetaVector(vel_mod):
+def test_VelocityCalculation_OutputLenght(vel_mod):
 
     # Vector of random orientations
-    theta = np.array([-1.5,0.5,2.8,1.2,-3.,1.7,0.3,1.1,-2.7,1.5])
+    theta = np.array([-1.5,0.5,2.8,1.2,-3.0,1.7,0.3,1.1,-2.7,1.5])
+
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
+
+    assert len(vel) == 2
+
+    assert len(vel[0]) == len(theta)
+    assert len(vel[1]) == len(theta)
+
+
+@given(vel_mod=st.floats(0,10,exclude_min=True))
+def test_VelocityCalculation_ConstantModulus(vel_mod):
+
+    # Vector of random orientations
+    theta = np.array([1.6,2.5,-0.8,0.2,3.0,-2.1,0.5,1.2,-1.7,2.9])
 
     vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
 
