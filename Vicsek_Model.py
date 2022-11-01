@@ -58,27 +58,28 @@ def VelocityCalculation(vel_mod,theta):
 
     return vel
 
-def FindNeighbors(positions,int_radius,particle):
+def FindNeighbors(positions,int_radius,particle,space_dim):
 
     """
-    This function finds the neighbors within a circle of radius int_radius aroud a reference particle.
+    This function finds the neighbors within a circle of radius int_radius aroud a reference particle satisfying periodic boundary conditions.
 
     Parameters:
         positions: particles positions (N X 2 array)
         int_radius: interaction int_radius
         particle: reference particle position
+        space_dim: linear dimension of space
 
     Returns:
     List of neighbors indeces inds.
     """
 
-    tree=KDTree(positions)
+    tree=KDTree(positions,boxsize=space_dim)
     inds = tree.query_ball_point(particle,int_radius)
     inds=inds[0]
 
     return inds
 
-def NeighborsMeanAngle(config,int_radius):
+def NeighborsMeanAngle(config,int_radius,space_dim):
 
     """
     This function calculates the mean orientation of the neighbor partcicles within a circle of radius int_radius around each of the particles.
@@ -86,6 +87,7 @@ def NeighborsMeanAngle(config,int_radius):
     Parameters
         config: previous particles configuration
         int_radius: interaction radius
+        space_dim: linear dimension of space
 
     Returns:
         Mean orientation of the particles.
@@ -97,8 +99,8 @@ def NeighborsMeanAngle(config,int_radius):
 
     for i in range(0,len(pos)):
 
-        # Find the neighbors of each particle within the interaction radius int_radius
-        neighbors = FindNeighbors(pos,int_radius,[pos[i]])
+        # Find the neighbors of each particle within the interaction radius int_radius satisfying periodic boundary conditions
+        neighbors = FindNeighbors(pos,int_radius,[pos[i]],space_dim)
 
         # Calculate the mean orientation of the neighbor particles within int_radius
         mean_cos = np.mean(np.cos(config[2][neighbors]))
@@ -135,8 +137,8 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step):
     assert all(i < space_dim and i >= 0 for i in config[0])
     assert all(i < space_dim and i >= 0 for i in config[1])
 
-    # Calculate the mean orientation of particles within R0
-    mean_theta =  NeighborsMeanAngle(config,int_radius)
+    # Calculate the mean orientation of particles within int_radius satisfying periodic boundary conditions
+    mean_theta =  NeighborsMeanAngle(config,int_radius,space_dim)
 
     # Update particles orientation
     config[2] = mean_theta + noise_ampl*(np.random.rand(len(config[2]))-0.5)
