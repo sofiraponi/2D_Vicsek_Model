@@ -16,7 +16,7 @@ from hypothesis import given, settings
 
 
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
-def test_InitialConfiguration(num_part,space_dim):
+def test_InitialConfigurationlLenght(num_part,space_dim):
 
     np.random.seed(3)
 
@@ -26,6 +26,14 @@ def test_InitialConfiguration(num_part,space_dim):
     assert len(x) == num_part
     assert len(y) == num_part
     assert len(theta) == num_part
+
+
+@given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
+def test_InitialConfigurationlRange(num_part,space_dim):
+
+    np.random.seed(3)
+
+    x, y, theta = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     # Test if all particles are inside the space of linear dimension space_dim
     assert all(i < space_dim and i >= 0 for i in x)
