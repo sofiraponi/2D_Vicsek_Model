@@ -16,7 +16,7 @@ from hypothesis import given, settings
 
 
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
-def test_InitialConfigurationLenght(num_part,space_dim):
+def test_InitialConfiguration_OutputLenght(num_part,space_dim):
 
     np.random.seed(3)
 
