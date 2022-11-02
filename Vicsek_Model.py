@@ -93,19 +93,20 @@ def NeighborsMeanAngle(config,int_radius,space_dim):
         Mean orientation of the particles.
     """
 
-    mean_theta=config[2]
+    mean_theta=config[2].copy()
 
     pos=np.array([config[0],config[1]]).T
 
-    for i in range(0,len(pos)):
+    for i in range(0,len(config[2])):
 
         # Find the neighbors of each particle within the interaction radius int_radius satisfying periodic boundary conditions
         neighbors = FindNeighbors(pos,int_radius,[pos[i]],space_dim)
 
+        mean_sin=np.mean(np.sin(config[2][neighbors]))
+        mean_cos=np.mean(np.cos(config[2][neighbors]))
+
         # Calculate the mean orientation of the neighbor particles within int_radius
-        mean_cos = np.mean(np.cos(config[2][neighbors]))
-        mean_sin = np.mean(np.sin(config[2][neighbors]))
-        mean_theta[i] = np.arctan2(mean_sin, mean_cos)
+        mean_theta[i] = np.arctan2(mean_sin,mean_cos)
 
     return mean_theta
 
