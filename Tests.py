@@ -137,6 +137,27 @@ def test_FindNeighbors_NullRadius():
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[9]],space_dim) == [9]
 
 
+def test_FindNeighbors_AllNeighbors():
+
+    space_dim=10
+    int_radius=10*np.sqrt(2)
+
+    #Set of 10 particles inside the system space
+    positions=np.array([[4,2],[3,5],[2,8],[1,9],[0,3],[2,0],[7,1],[9,2],[8,4],[6,7]])
+
+    # Test that all particles are neighbors of each other
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[3]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[4]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[5]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[6]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[7]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[8]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+    assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[9]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
+
+
 @given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
 @settings(max_examples = 10, deadline=1000)
 def test_NeighborsMeanAngle_OutputLenghtandRange(num_part,space_dim,int_radius):
@@ -186,6 +207,7 @@ def test_NeighborsMeanAngle_NullRadius():
 
     # Test that mean_theta is equal to the particle orientation
     assert np.allclose(mean_theta,config[2])
+
 
 def test_NeighborsMeanAngle_AllNeighbors():
 
