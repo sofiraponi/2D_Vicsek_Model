@@ -48,7 +48,7 @@ ax2.grid()
 def animate(i):
 
     ax1.clear()
-    ax1.quiver(position[i,0],position[i,1],np.cos(theta[i]),np.sin(theta[i]))
+    ax1.quiver(position[i][0],position[i][1],np.cos(theta[i]),np.sin(theta[i]))
     ax1.set_xlim([0,L])
     ax1.set_ylim([0,L])
 

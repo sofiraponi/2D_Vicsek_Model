@@ -36,39 +36,13 @@ theta_path = config['paths']['orientation']
 # Initialization
 np.random.seed(seed)
 
-# Define data arrays
-phi_data=np.empty(Ns+1)
-position_data=np.empty([Ns+1,2,N])
-theta_data=np.empty([Ns+1,1,N])
-
 # Calculate initial configuration (position and orientation)
 config = Vicsek_Model.InitialConfiguration(N,L)
 
 # Calculate initial velocity
 vel = Vicsek_Model.VelocityCalculation(v0,config[2])
 
-# Save initial configuration
-position_data[0] = config[0], config[1]
-theta_data[0] = config[2]
-
-# Calculate initial order parameter
-phi_data[0] = Vicsek_Model.OrderParameter(config[2])
-
-# Main loop
-for i in range(Ns):
-
-    # Update configuration
-    config = Vicsek_Model.ConfigurationUpdate(config,vel,R0,eta,L,dt)
-
-    # Update velocity
-    vel = Vicsek_Model.VelocityCalculation(v0,config[2])
-
-    # Calculate order parameter
-    phi_data[i+1]=Vicsek_Model.OrderParameter(config[2])
-
-    # Save current configuration
-    position_data[i+1] = config[0], config[1]
-    theta_data[i+1]= config[2]
+position_data, theta_data, phi_data = Vicsek_Model.Simulate(config,vel,R0,eta,L,dt,Ns,v0)
 
 # Save particles configuration and order parameter evolution
 np.save(position_path,position_data)

@@ -168,3 +168,50 @@ def OrderParameter(theta):
     assert phi <= 1
 
     return phi
+
+def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_mod):
+
+    """
+    This function updates the particles position and orienation and calculates the order parameter num_steps times.
+
+    Parameters
+        config: previous particles configuration
+        vel: particles velocity
+        int_radius: interaction radius
+        noise_ampl: noise amplituse
+        space_dim: linear dimension of space
+        time_step: time step
+        num_steps: number of steps
+        vel_mod: velocity modulus
+
+    Returns:
+        Position of the particles (position_updates), orientation of the particles (position_updates) and order parameter (phi_updates) at each step.
+    """
+
+    initconfig=config.copy()
+
+    position_updates=[[initconfig[0],initconfig[1]]]
+
+    theta_updates=[initconfig[2]]
+
+    initphi=OrderParameter(initconfig[2])
+
+    phi_updates=[initphi]
+
+    for i in range(num_steps):
+
+        config = ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
+
+        state=config.copy()
+
+        # Update velocity
+        vel = VelocityCalculation(vel_mod,state[2])
+
+        # Calculate order parameter
+        phi = OrderParameter(state[2])
+
+        position_updates.append([state[0],state[1]])
+        theta_updates.append(state[2])
+        phi_updates.append(phi)
+
+    return position_updates, theta_updates, phi_updates
