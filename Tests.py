@@ -223,42 +223,26 @@ def test_NeighborsMeanAngle_AllNeighbors():
 
     # Test that mean_theta is equal for each particle
     assert np.allclose(mean_theta,mean_theta[0])
+    
 
+def test_ConfigurationUpdate_BoundaryConditions():
 
-@given(int_radius=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1), num_part=st.integers(10,500), space_dim = st.floats(1,50), time_step=st.floats(0,1,exclude_min=True), vel_mod=st.floats(0,10,exclude_min=True), num_steps=st.integers(50,1000))
-@settings(max_examples = 1, deadline=1000)
-def test_ConfigurationUpdate(num_part,space_dim,vel_mod,noise_ampl,time_step,num_steps,int_radius):
+    space_dim=10
+    vel_mod=2.
+    int_radius=0.
+    noise_ampl=0.
+    time_step=1.
 
-    np.random.seed(3)
+    # Configuration of 4 particles near the edges of the system moving out of the system
+    config = np.array([[1, 5, 9, 5],[5, 9, 5, 1],[np.pi, np.pi/2, 0, -np.pi/2]])
 
-    # Generate an initial random particles configuration
-    config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
-
-    # Calculate the particles velocity
     vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
-    # Calculate the initial order parameter
-    initphi = Vicsek_Model.OrderParameter(config[2])
+    config = Vicsek_Model.ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
 
-    for i in range(num_steps):
-
-        # Update the particles configuration with random interaction radius
-        config = Vicsek_Model.ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
-
-        # Test if all particles are still inside the space of linear dimension space_dim
-        mod_x = np.abs(config[0])
-        mod_y = np.abs(config[1])
-        assert all(i <= space_dim for i in mod_x)
-        assert all(i <= space_dim for i in mod_y)
-
-        # Update the particles velocity
-        vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
-
-    # Calculate the final order parameter
-    finalphi = Vicsek_Model.OrderParameter(config[2])
-
-    # Test the phase transition
-    assert finalphi >= initphi
+    # Test that particles do not exit the system
+    assert np.allclose(config[0],[[9, 5, 1, 5]])
+    assert np.allclose(config[1],[[5, 1, 5, 9]])
 
 
 def test_OrderParameter_EqualOrientations():
