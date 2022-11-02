@@ -104,10 +104,10 @@ def test_FindNeighbors():
 def test_FindNeighbors_BoundaryConditions():
 
     space_dim=10
-    int_radius=1
+    int_radius=2
 
     # Set of 4 particles near the boders of the system space
-    positions=np.array([[0.5,5],[5,9.5],[9.5,5],[5,0.5]])
+    positions=np.array([[1,5],[5,9],[9,5],[5,1]])
 
     # Test the satisfaction of periodic boundary conditions
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0,2]
@@ -223,7 +223,7 @@ def test_NeighborsMeanAngle_AllNeighbors():
 
     # Test that mean_theta is equal for each particle
     assert np.allclose(mean_theta,mean_theta[0])
-    
+
 
 def test_ConfigurationUpdate_BoundaryConditions():
 
