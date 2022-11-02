@@ -86,7 +86,7 @@ def test_FindNeighbors():
     int_radius=1.5
 
     # Set of 10 particles inside the system space
-    positions=([[1,4],[1,7],[4,7],[7,5],[8,6],[7,8],[6,8],[6,4],[5,2],[1,8]])
+    positions=np.array([[1,4],[1,7],[4,7],[7,5],[8,6],[7,8],[6,8],[6,4],[5,2],[1,8]])
 
     # Test the neighbors within a the interaction radius
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0]
@@ -122,7 +122,7 @@ def test_FindNeighbors_NullRadius():
     int_radius=0
 
     #Set of 10 particles inside the system space
-    positions=([[7,5],[1,8],[7,8],[2,9],[7,7],[7,9],[8,4],[2,6],[4,3],[0,7]])
+    positions=np.array([[7,5],[1,8],[7,8],[2,9],[7,7],[7,9],[8,4],[2,6],[4,3],[0,7]])
 
     # Test that each particles is the only neighbors of itself if the interaction radius is null
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0]
@@ -139,7 +139,7 @@ def test_FindNeighbors_NullRadius():
 
 @given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
 @settings(max_examples = 10, deadline=1000)
-def test_NeighborsMeanAngle(num_part,space_dim,int_radius):
+def test_NeighborsMeanAngle_OutputLenghtandRange(num_part,space_dim,int_radius):
 
     np.random.seed(3)
 
@@ -153,12 +153,54 @@ def test_NeighborsMeanAngle(num_part,space_dim,int_radius):
     assert len(mean_theta) == num_part
 
     # Test if all mean orientations are between -π and π
-    mod_mean_theta = np.abs(mean_theta)
-    assert all(i <= np.pi for i in mod_mean_theta)
+    assert all(i <= np.pi and i>=-np.pi for i in mean_theta)
 
-    # Test that mean_theta is equal to the particle orientation when int_radius = 0
-    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,0,space_dim)
+
+@given(int_radius=st.floats(0,10))
+def test_NeighborsMeanAngle_EqualOrientations(int_radius):
+
+    space_dim=10
+
+    config = np.array([[1, 4, 5, 1, 6, 6, 1, 6, 5, 3],
+       [2, 3, 4, 8, 4, 2, 6, 0, 2, 9],
+       [1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]])
+
+    # Calculate the mean neighbors direction for each particle with random interaction radius
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
+
+    # Test that when particles have all the same orientation mean_theta is for each particle equal to their orientation
+    assert np.allclose(mean_theta,1.)
+
+
+def test_NeighborsMeanAngle_NullRadius():
+
+    space_dim=10
+    int_radius=0
+
+    config = np.array([[5, 5, 9, 6, 6, 8, 2, 5, 8, 1],
+       [2, 7, 0, 8, 3, 1, 0, 3, 2, 3],
+       [0.5,-1.0,2.2,1.8,-0.3,1.4,2.7,-3.1,1.2,0.6]])
+
+    # Calculate the mean neighbors direction for each particle with random interaction radius
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
+
+    # Test that mean_theta is equal to the particle orientation
     assert np.allclose(mean_theta,config[2])
+
+def test_NeighborsMeanAngle_AllNeighbors():
+
+    space_dim=10
+    int_radius=space_dim*np.sqrt(2)
+
+    config = np.array([[4, 6, 8, 4, 8, 1, 9, 5, 4, 2],
+       [3, 4, 7, 6, 6, 8, 0, 3, 5, 6],
+       [-0.7,2.0,0.3,-1.5,0.9,2.0,-3.0,-1.9,2.8,-0.3]])
+
+    # Calculate the mean neighbors direction for each particle with random interaction radius
+    mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
+
+    # Test that mean_theta is equal for each particle
+    assert np.allclose(mean_theta,mean_theta[0])
 
 
 @given(int_radius=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1), num_part=st.integers(10,500), space_dim = st.floats(1,50), time_step=st.floats(0,1,exclude_min=True), vel_mod=st.floats(0,10,exclude_min=True), num_steps=st.integers(50,1000))
