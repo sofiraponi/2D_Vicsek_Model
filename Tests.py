@@ -287,6 +287,26 @@ def test_ConfigurationUpdate_BoundaryConditions():
     assert np.allclose(config[1],[[5, 1, 5, 9]])
 
 
+@given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(50,500),space_dim=st.floats(1,50),vel_mod=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1),time_step=st.floats(0,1,exclude_min=True),num_steps=st.integers(50,500))
+@settings(max_examples=1)
+def test_PhaseTransition(int_radius,noise_ampl,space_dim,time_step,num_steps,vel_mod,num_part):
+
+    np.random.seed(3)
+
+    int_radius = int_radius*space_dim*np.sqrt(2)
+
+    # Generate a random particles configuration
+    initconfig = Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    initvel = Vicsek_Model.VelocityCalculation(vel_mod,initconfig[2])
+
+    # Update the configuration and calculates the order parameter num_steps times
+    position, theta, phi = Vicsek_Model.Simulate(initconfig,initvel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_mod)
+
+    # Test the phase transition
+    assert phi[num_steps-1]>=phi[0]
+
+
 def test_OrderParameter_EqualOrientations():
 
     # All equal orientations
