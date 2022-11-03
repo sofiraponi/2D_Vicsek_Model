@@ -225,6 +225,48 @@ def test_NeighborsMeanAngle_AllNeighbors():
     assert np.allclose(mean_theta,mean_theta[0])
 
 
+@given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim=st.floats(1,50),vel_mod=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1),time_step=st.floats(0,1,exclude_min=True))
+def test_ConfigurationUpdate_OutputLenght(num_part,int_radius,noise_ampl,space_dim,time_step,vel_mod):
+
+    np.random.seed(3)
+
+    int_radius = int_radius*space_dim*np.sqrt(2)
+
+    # Generate a random particles configuration
+    config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
+
+    config = Vicsek_Model.ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
+
+    assert len(config) == 3
+
+    # Test if the lenght of x, y and theta is num_part
+    assert len(config[0]) == num_part
+    assert len(config[1]) == num_part
+    assert len(config[2]) == num_part
+
+
+@given(int_radius=st.floats(0,1,exclude_min=True),num_part=st.integers(10,500), space_dim=st.floats(1,50),vel_mod=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1),time_step=st.floats(0,1,exclude_min=True))
+def test_ConfigurationUpdate_OutputRange(num_part,int_radius,noise_ampl,space_dim,time_step,vel_mod):
+
+    np.random.seed(3)
+
+    int_radius = int_radius*space_dim*np.sqrt(2)
+
+    # Generate a random particles configuration
+    config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
+
+    config = Vicsek_Model.ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
+
+    assert all(i < space_dim and i >= 0 for i in config[0])
+    assert all(i < space_dim and i >= 0 for i in config[1])
+
+    assert all(i <= np.pi+0.5 and i >= -np.pi-0.5 for i in config[2])
+
+
 def test_ConfigurationUpdate_BoundaryConditions():
 
     space_dim=10
