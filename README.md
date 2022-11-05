@@ -4,6 +4,8 @@ The Vicsek model is a self-organized motion model that plays a key role in the s
 
 The goal of this project is to simulate the two-dimensional Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
 
+In order to simulate the 2D Vicsek Mosdel, once the input parameters have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
+
 The user must use the following syntax to launch the simulation and visualize the animation from command line interface.
 
 1. ```python Simulation.py settings.ini```
@@ -26,8 +28,6 @@ Where the ![equation](https://latex.codecogs.com/svg.image?Arg) function returns
 The order parameter is approximately null if the directions of motion of the individual particles are distributed randomly; while for the phase of coherent motion, with an ordered direction of the velocities, it assumes a finite and approximately unitary value.
 
 ## Model simulation
-In order to simulate the 2D Vicsek Mosdel, once the input parameters have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
-
 The steps that the user must follow to perform the simulation and visualize both the particles motion and the evolution of the order parameter are the following:
 
 1. The user has to set the model parameters in the [settings](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/settings.ini) file. In particular, the user has to choose: the particle velocity modulus ![equation](https://latex.codecogs.com/svg.image?v_0), the noise amplitude ![equation](https://latex.codecogs.com/svg.image?\eta), the interaction radius ![equation](https://latex.codecogs.com/svg.image?R_0), the time step ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t), the number of particles ![equation](https://latex.codecogs.com/svg.image?N), the linear dimension of the system ![equation](https://latex.codecogs.com/svg.image?L) and the total time ![equation](https://latex.codecogs.com/svg.image?T). The user must follow some constraints in setting these parameters in order to observe the transition to collective motion, namely: ![equation](https://latex.codecogs.com/svg.image?v_0>0) since the model concerns particles in motion, ![equation](https://latex.codecogs.com/svg.image?\eta\in[0,1]) by definition, ![equation](https://latex.codecogs.com/svg.image?R_0>0) otherwise the system would be a set of independent random walkers and ![equation](https://latex.codecogs.com/svg.image?N) must be high enough since the model concerns a collective behavior (usually ![equation](https://latex.codecogs.com/svg.image?N\geq10)).
