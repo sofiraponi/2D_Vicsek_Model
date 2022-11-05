@@ -4,7 +4,6 @@ The Vicsek model is a self-organized motion model that plays a key role in the s
 
 The goal of this project is to simulate the two-dimensional Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
 
-## Command line syntax 
 The user must use the following syntax to launch the simulation and visualize the animation from command line interface.
 
 1. ```python Simulation.py settings.ini```
