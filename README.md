@@ -42,7 +42,7 @@ The project is formed by 5 files:
 
 1. [settings](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/settings.ini) is a .ini file that contains the model parameter set by the user and the local paths used to save and load the data to be visualized.
 
-2. [Vicsek_Model](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Vicsek_Model.py) is a .py file in which are defined all the functions needed for the model simulation. In particular, there is a function that generates the initial configuration (coordinates and direction) of the particles, a function that calculates the velocity components of each particle, a function that updates the particles configuration and a function that calculates the order parameter.
+2. [Vicsek_Model](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Vicsek_Model.py) is a .py file in which are defined all the functions needed for the model simulation.
 
 3. [Tests](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Test.py) is a .py file used to test functions defined in [Vicsek_Model](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/Vicsek_Model.py).
 
