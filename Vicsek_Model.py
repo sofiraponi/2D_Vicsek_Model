@@ -127,24 +127,26 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step):
         Updated configuration of the particles (config).
     """
 
+    new_config=config.copy()
+
     # Update particles position
-    config[0] = config[0] + vel[0]*time_step
-    config[1] = config[1] + vel[1]*time_step
+    new_config[0] = config[0] + vel[0]*time_step
+    new_config[1] = config[1] + vel[1]*time_step
 
     # Impose periodic boundary conditions
-    config[0] = config[0] % space_dim
-    config[1] = config[1] % space_dim
+    new_config[0] = new_config[0] % space_dim
+    new_config[1] = new_config[1] % space_dim
 
-    assert all(i < space_dim and i >= 0 for i in config[0])
-    assert all(i < space_dim and i >= 0 for i in config[1])
+    assert all(i < space_dim and i >= 0 for i in new_config[0])
+    assert all(i < space_dim and i >= 0 for i in new_config[1])
 
     # Calculate the mean orientation of particles within int_radius satisfying periodic boundary conditions
-    mean_theta =  NeighborsMeanAngle(config,int_radius,space_dim)
+    mean_theta =  NeighborsMeanAngle(new_config,int_radius,space_dim)
 
     # Update particles orientation
-    config[2] = mean_theta + noise_ampl*(np.random.rand(len(config[2]))-0.5)
+    new_config[2] = mean_theta + noise_ampl*(np.random.rand(len(new_config[2]))-0.5)
 
-    return config
+    return new_config
 
 def OrderParameter(theta):
 
@@ -175,7 +177,7 @@ def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_
     This function updates the particles position and orienation and calculates the order parameter num_steps times.
 
     Parameters
-        config: previous particles configuration
+        init_config: previous particles configuration
         vel: particles velocity
         int_radius: interaction radius
         noise_ampl: noise amplituse
@@ -185,33 +187,25 @@ def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_
         vel_mod: velocity modulus
 
     Returns:
-        Position of the particles (position_updates), orientation of the particles (position_updates) and order parameter (phi_updates) at each step.
+        Position of the particles (position_updates), orientation of the particles (position_updates) at each step.
     """
+    #Initial positions and orientations
+    init_config=config.copy()
+    position_updates=[[init_config[0],init_config[1]]]
+    theta_updates=[init_config[2]]
 
-    initconfig=config.copy()
-
-    position_updates=[[initconfig[0],initconfig[1]]]
-
-    theta_updates=[initconfig[2]]
-
-    initphi=OrderParameter(initconfig[2])
-
-    phi_updates=[initphi]
-
+    # Main loop
     for i in range(num_steps):
 
+        # Configuration update
         config = ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
-
-        state=config.copy()
+        new_config=config.copy()
 
         # Update velocity
-        vel = VelocityCalculation(vel_mod,state[2])
+        vel = VelocityCalculation(vel_mod,new_config[2])
 
-        # Calculate order parameter
-        phi = OrderParameter(state[2])
+        # Save updated positions and orientations
+        position_updates.append([new_config[0],new_config[1]])
+        theta_updates.append(new_config[2])
 
-        position_updates.append([state[0],state[1]])
-        theta_updates.append(state[2])
-        phi_updates.append(phi)
-
-    return position_updates, theta_updates, phi_updates
+    return position_updates, theta_updates
