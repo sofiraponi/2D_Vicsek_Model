@@ -42,7 +42,14 @@ config = Vicsek_Model.InitialConfiguration(N,L)
 # Calculate initial velocity
 vel = Vicsek_Model.VelocityCalculation(v0,config[2])
 
-position_data, theta_data, phi_data = Vicsek_Model.Simulate(config,vel,R0,eta,L,dt,Ns,v0)
+# Update particles configuration Ns times
+position_data, theta_data = Vicsek_Model.Simulate(config,vel,R0,eta,L,dt,Ns,v0)
+
+# Calculate the order parameter per each configuration
+phi_data=np.empty(Ns+1)
+for i in range(0,len(theta_data)):
+    phi = Vicsek_Model.OrderParameter(theta_data[i])
+    phi_data[i]=phi
 
 # Save particles configuration and order parameter evolution
 np.save(position_path,position_data)
