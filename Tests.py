@@ -5,7 +5,6 @@
 #  Tests
 #
 #  Aim: To test funcions in Viscek_Model.py.
-#
 #==============================================================
 
 import Vicsek_Model
@@ -18,13 +17,22 @@ from hypothesis import given, settings
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_InitialConfiguration_OutputLenght(num_part,space_dim):
 
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    ---------
+    Verification:
+    3. The lenght of the output is 3
+    4. The lenght of the output components (coordinates x, y and orietations of the particles) is num_part
+    """
+
     np.random.seed(3)
 
     config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     assert len(config) == 3
 
-    # Test if the lenght of x, y and theta is num_part
     assert len(config[0]) == num_part
     assert len(config[1]) == num_part
     assert len(config[2]) == num_part
@@ -33,11 +41,19 @@ def test_InitialConfiguration_OutputLenght(num_part,space_dim):
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_InitialPositionRange(num_part,space_dim):
 
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    ---------
+    Verification:
+    3. All the particles coordinates (x, y) are in [0, space_dim)
+    """
+
     np.random.seed(3)
 
     config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
-    # Test if all particles are inside the space of linear dimension space_dim
     assert all(i < space_dim and i >= 0 for i in config[0])
     assert all(i < space_dim and i >= 0 for i in config[1])
 
@@ -45,50 +61,88 @@ def test_InitialPositionRange(num_part,space_dim):
 @given(num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_InitialOrientationRange(num_part,space_dim):
 
+    """
+    Procedure:
+    1. Initialization random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    ---------
+    Verification:
+    3. All the particles orientations are in [-π, π]
+    """
+
     np.random.seed(3)
 
     config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
-    # Test that theta is between -π and π
     assert all(i <= np.pi and i >= -np.pi for i in config[2])
 
 
-@given(vel_mod=st.floats(0,10,exclude_min=True))
+@given(vel_mod=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_VelocityCalculation_OutputLenght(vel_mod):
 
-    # Vector of random orientations
-    theta = np.array([-1.5,0.5,2.8,1.2,-3.0,1.7,0.3,1.1,-2.7,1.5])
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    3. Calculate the velocity of the particles given a certain velocity modulus (vel_mod)
+    ---------
+    Verification:
+    4. The lenght of the output is 2
+    5. The lenght of the output components (vx, vy) is num_part
+    """
 
-    vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
+    np.random.seed(3)
+
+    config = Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
     assert len(vel) == 2
 
-    assert len(vel[0]) == len(theta)
-    assert len(vel[1]) == len(theta)
+    assert len(vel[0]) == num_part
+    assert len(vel[1]) == num_part
 
 
 @given(vel_mod=st.floats(0,10,exclude_min=True))
 def test_VelocityCalculation_ConstantModulus(vel_mod):
 
-    # Vector of random orientations
+    """
+    Procedure:
+    1. Create a vector of different orientations of 10 particles in [-π, π]
+    2. Calculate the velocity of the particles given a certain velocity modulus (vel_mod)
+    3. Calculate the modulus of the velocity of the particles
+    ---------
+    Verification:
+    4. The calculated modulus of the velocity of each particle is equal to the square of vel_mod
+    """
+
     theta = np.array([1.6,2.5,-0.8,0.2,3.0,-2.1,0.5,1.2,-1.7,2.9])
 
     vel = Vicsek_Model.VelocityCalculation(vel_mod,theta)
 
-    # Test if the velocity of each particle has constant module
     mod_square = vel[0]**2+vel[1]**2
+
     assert all(np.isclose(i,vel_mod**2) for i in mod_square)
 
 
 def test_FindNeighbors():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set the interaction radius in (0, √2*space_dim)
+    3. Create a vector of positions of 10 particles inside the system space
+    ---------
+    Verification:
+    4. The neighbors of each particle within the interaction radius are identified correctly
+    """
+
     space_dim=10
+
     int_radius=1.5
 
-    # Set of 10 particles inside the system space
     positions=np.array([[1,4],[1,7],[4,7],[7,5],[8,6],[7,8],[6,8],[6,4],[5,2],[1,8]])
 
-    # Test the neighbors within a the interaction radius
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [1,9]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [2]
@@ -103,13 +157,22 @@ def test_FindNeighbors():
 
 def test_FindNeighbors_BoundaryConditions():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set the interaction radius in (0, √2*space_dim)
+    3. Create a vector of the positions of 4 particles inside the system space and close to the borders
+    ---------
+    Verification:
+    4. The neighbors of each particle within the interaction radius are identified by satisfying the periodic boundary conditions
+    """
+
     space_dim=10
+
     int_radius=2
 
-    # Set of 4 particles near the boders of the system space
     positions=np.array([[1,5],[5,9],[9,5],[5,1]])
 
-    # Test the satisfaction of periodic boundary conditions
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0,2]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [1,3]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [0,2]
@@ -118,13 +181,22 @@ def test_FindNeighbors_BoundaryConditions():
 
 def test_FindNeighbors_NullRadius():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set the interaction radius equal to 0
+    3. Create a vector of positions of 10 particles inside the system space
+    ---------
+    Verification:
+    4. Each particles is the only neighbor of itself
+    """
+
     space_dim=10
+
     int_radius=0
 
-    #Set of 10 particles inside the system space
     positions=np.array([[7,5],[1,8],[7,8],[2,9],[7,7],[7,9],[8,4],[2,6],[4,3],[0,7]])
 
-    # Test that each particles is the only neighbors of itself if the interaction radius is null
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [1]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [2]
@@ -139,13 +211,22 @@ def test_FindNeighbors_NullRadius():
 
 def test_FindNeighbors_AllNeighbors():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set the interaction radius equal to √2*space_dim
+    3. Create a vector of random positions of 10 particles inside the system space
+    ---------
+    Verification:
+    4. All particles are neighbors of each other
+    """
+
     space_dim=10
+
     int_radius=10*np.sqrt(2)
 
-    #Set of 10 particles inside the system space
     positions=np.array([[4,2],[3,5],[2,8],[1,9],[0,3],[2,0],[7,1],[9,2],[8,4],[6,7]])
 
-    # Test that all particles are neighbors of each other
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[0]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[1]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[2]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
@@ -158,81 +239,128 @@ def test_FindNeighbors_AllNeighbors():
     assert Vicsek_Model.FindNeighbors(positions,int_radius,[positions[9]],space_dim) == [0,1,2,3,4,5,6,7,8,9]
 
 
-@given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
+@given(int_radius=st.floats(0,1,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
 def test_NeighborsMeanAngle_OutputLenghtandRange(num_part,space_dim,int_radius):
+
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    3. Set that the interaction radius is a given float in [0, √2*space_dim]
+    4. Calculate the mean angle of neighbors of each particle
+    ---------
+    Verification:
+    5. The lenght of the output is num_part
+    6. The mean angle of neighbors of each particle is in [-π, π]
+    """
 
     np.random.seed(3)
 
-    # Generate a random particles configuration
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
-    # Calculate the mean neighbors direction for each particle with random interaction radius
+    int_radius = int_radius*space_dim*np.sqrt(2)
+
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
 
-    # Test if the lenght of the output is equal to the number of particles
     assert len(mean_theta) == num_part
 
-    # Test if all mean orientations are between -π and π
     assert all(i <= np.pi and i>=-np.pi for i in mean_theta)
 
 
-@given(int_radius=st.floats(0,10))
+@given(int_radius=st.floats(0,1))
 def test_NeighborsMeanAngle_EqualOrientations(int_radius):
+
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set that the interaction radius is a given float in [0, √2*space_dim]
+    3. Create a configration of 10 particles all with equal orientation
+    4. Calculate the mean angle of neighbors of each particle
+    ---------
+    Verification:
+    5. The mean angle of neighbors is for each particle equal to the orientation of the particles
+    """
 
     space_dim=10
 
-    config = np.array([[1, 4, 5, 1, 6, 6, 1, 6, 5, 3],
-       [2, 3, 4, 8, 4, 2, 6, 0, 2, 9],
-       [1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]])
+    int_radius=int_radius*10*np.sqrt(2)
 
-    # Calculate the mean neighbors direction for each particle with random interaction radius
+    config = np.array([[1, 4, 5, 1, 6, 6, 1, 6, 5, 3], [2, 3, 4, 8, 4, 2, 6, 0, 2, 9], [1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]])
+
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
 
-    # Test that when particles have all the same orientation mean_theta is for each particle equal to their orientation
     assert np.allclose(mean_theta,1.)
 
 
 def test_NeighborsMeanAngle_NullRadius():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set that the interaction radius is 0
+    3. Create a configration of 10 particles all with different orientations
+    4. Calculate the mean angle of neighbors of each particle
+    ---------
+    Verification:
+    5. The mean angle of neighbors is for each particle equal to its orientation (vector of neighbors mean angles equal to vector of orientations)
+    """
+
     space_dim=10
+
     int_radius=0
 
-    config = np.array([[5, 5, 9, 6, 6, 8, 2, 5, 8, 1],
-       [2, 7, 0, 8, 3, 1, 0, 3, 2, 3],
-       [0.5,-1.0,2.2,1.8,-0.3,1.4,2.7,-3.1,1.2,0.6]])
+    config = np.array([[5, 5, 9, 6, 6, 8, 2, 5, 8, 1], [2, 7, 0, 8, 3, 1, 0, 3, 2, 3], [0.5,-1.0,2.2,1.8,-0.3,1.4,2.7,-3.1,1.2,0.6]])
 
-    # Calculate the mean neighbors direction for each particle with random interaction radius
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
 
-    # Test that mean_theta is equal to the particle orientation
     assert np.allclose(mean_theta,config[2])
 
 
 def test_NeighborsMeanAngle_AllNeighbors():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set the interaction radius equal to √2*space_dim
+    3. Create a configration of 10 particles with different orientations
+    4. Calculate the mean angle of neighbors of each particle
+    ---------
+    Verification:
+    5. The mean angle of neighbors is equal for each particle
+    """
+
     space_dim=10
-    int_radius=space_dim*np.sqrt(2)
 
-    config = np.array([[4, 6, 8, 4, 8, 1, 9, 5, 4, 2],
-       [3, 4, 7, 6, 6, 8, 0, 3, 5, 6],
-       [-0.7,2.0,0.3,-1.5,0.9,2.0,-3.0,-1.9,2.8,-0.3]])
+    int_radius=10*np.sqrt(2)
 
-    # Calculate the mean neighbors direction for each particle with random interaction radius
+    config = np.array([[4, 6, 8, 4, 8, 1, 9, 5, 4, 2], [3, 4, 7, 6, 6, 8, 0, 3, 5, 6], [-0.7,2.0,0.3,-1.5,0.9,2.0,-3.0,-1.9,2.8,-0.3]])
+
     mean_theta = Vicsek_Model.NeighborsMeanAngle(config,int_radius,space_dim)
 
-    # Test that mean_theta is equal for each particle
     assert np.allclose(mean_theta,mean_theta[0])
 
 
 @given(int_radius=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim=st.floats(1,50),vel_mod=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1),time_step=st.floats(0,1,exclude_min=True))
 def test_ConfigurationUpdate_OutputLenght(num_part,int_radius,noise_ampl,space_dim,time_step,vel_mod):
 
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    3. Set that the interaction radius is a given float in [0, √2*space_dim]
+    4. Calculate the velocity of the particles given a certain velocity modulus (vel_mod)
+    5. Update the particles configuration given a certain noise amplitude (noise_ampl) and time step (time_step)
+    ---------
+    Verification:
+    6. The lenght of the output is 3
+    7. The lenght of the output components (coordinates x, y and orietations of the particles) is num_part
+    """
+
     np.random.seed(3)
 
-    int_radius = int_radius*space_dim*np.sqrt(2)
-
-    # Generate a random particles configuration
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    int_radius = int_radius*space_dim*np.sqrt(2)
 
     vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
@@ -240,7 +368,6 @@ def test_ConfigurationUpdate_OutputLenght(num_part,int_radius,noise_ampl,space_d
 
     assert len(config) == 3
 
-    # Test if the lenght of x, y and theta is num_part
     assert len(config[0]) == num_part
     assert len(config[1]) == num_part
     assert len(config[2]) == num_part
@@ -249,12 +376,24 @@ def test_ConfigurationUpdate_OutputLenght(num_part,int_radius,noise_ampl,space_d
 @given(int_radius=st.floats(0,1,exclude_min=True),num_part=st.integers(10,500), space_dim=st.floats(1,50),vel_mod=st.floats(0,10,exclude_min=True),noise_ampl=st.floats(0,1),time_step=st.floats(0,1,exclude_min=True))
 def test_ConfigurationUpdate_OutputRange(num_part,int_radius,noise_ampl,space_dim,time_step,vel_mod):
 
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    3. Set that the interaction radius is a given float in [0, √2*space_dim]
+    4. Calculate the velocity of the particles given a certain velocity modulus (vel_mod)
+    5. Update the particles configuration given a certain noise amplitude (noise_ampl) and time step (time_step)
+    ---------
+    Verification:
+    6. All the updated particles coordinates (x, y) are in [0, space_dim)
+    7. All the updated particles orientations are in [-π-0.5, π+0-5]
+    """
+
     np.random.seed(3)
 
-    int_radius = int_radius*space_dim*np.sqrt(2)
-
-    # Generate a random particles configuration
     config=Vicsek_Model.InitialConfiguration(num_part,space_dim)
+
+    int_radius = int_radius*space_dim*np.sqrt(2)
 
     vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
@@ -268,20 +407,37 @@ def test_ConfigurationUpdate_OutputRange(num_part,int_radius,noise_ampl,space_di
 
 def test_ConfigurationUpdate_BoundaryConditions():
 
+    """
+    Procedure:
+    1. Set the space linear dimension
+    2. Set the velocity modulus
+    3. Set the interaction radius equal to 0
+    4. Set the noise amplitude equal to 0
+    5. Set the time step
+    6. Create the configuration of 4 particles near the space borders that move in the direction out of the system
+    7. Calculate the velocity of the particles
+    8. Update the particles configuration
+    ---------
+    Verification:
+    9. The updated configuration satisfies the periodic boundary conditions
+    """
+
     space_dim=10
+
     vel_mod=2.
+
     int_radius=0.
+
     noise_ampl=0.
+
     time_step=1.
 
-    # Configuration of 4 particles near the edges of the system moving out of the system
     config = np.array([[1, 5, 9, 5],[5, 9, 5, 1],[np.pi, np.pi/2, 0, -np.pi/2]])
 
     vel = Vicsek_Model.VelocityCalculation(vel_mod,config[2])
 
     config = Vicsek_Model.ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
 
-    # Test that particles do not exit the system
     assert np.allclose(config[0],[[9, 5, 1, 5]])
     assert np.allclose(config[1],[[5, 1, 5, 9]])
 
@@ -290,55 +446,82 @@ def test_ConfigurationUpdate_BoundaryConditions():
 @settings(max_examples=1)
 def test_PhaseTransition(int_radius,noise_ampl,space_dim,time_step,num_steps,vel_mod,num_part):
 
+    """
+    Procedure:
+    1. Initialize random seed
+    2. Set that the interaction radius is a given float in [0, √2*space_dim]
+    3. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
+    4. Calculate the velocity of the particles given a certain velocity modulus (vel_mod)
+    5. Update a certain number of steps (num_steps) the particles configuration given a certain noise amplitude (noise_ampl) and time step (time_step)
+    ---------
+    Verification:
+    6. The final order parameter is greater or equal than the initial one
+    """
+
     np.random.seed(3)
 
     int_radius = int_radius*space_dim*np.sqrt(2)
 
-    # Generate a random particles configuration
     initconfig = Vicsek_Model.InitialConfiguration(num_part,space_dim)
 
     initvel = Vicsek_Model.VelocityCalculation(vel_mod,initconfig[2])
 
-    # Update the configuration and calculates the order parameter num_steps times
     position, theta = Vicsek_Model.Simulate(initconfig,initvel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_mod)
 
-    # Test the phase transition
     assert Vicsek_Model.OrderParameter(theta[num_steps]) >= Vicsek_Model.OrderParameter(theta[0])
 
 
 def test_OrderParameter_EqualOrientations():
 
-    # All equal orientations
+    """
+    Procedure:
+    1. Create vector of 100 equal orientations
+    2. Calculate the order parameter
+    ---------
+    Verification:
+    3. The order parameter is close to 1
+    """
+
     theta=np.repeat(1.,100)
 
-    # Calculate the order parameter
     phi = Vicsek_Model.OrderParameter(theta)
 
-    # Test that the order parameter is 1 when all orientations are equal
     assert np.isclose(phi,1)
 
 
 def test_OrderParameter_RandomOrientations():
 
-    # Random orientations
+    """
+    Procedure:
+    1. Create vector of 10 different orientations
+    2. Calculate the order parameter
+    ---------
+    Verification:
+    3. The order parameter is close a certain number between in [0,1]
+    """
+
     theta = np.array([-0.5,1.5,1.8,2.2,-1.,0.7,2.3,2.1,-0.7,2.5])
 
-    # Calculate the order parameter
     phi = Vicsek_Model.OrderParameter(theta)
 
-    # Test that the order parameter is a number between 0 and 1 when orientations are random
     assert np.isclose(phi,0.3673557583)
 
 
 def test_OrderParameter_OppositeOrientations():
 
-    # Opposite orientations
+    """
+    Procedure:
+    1. Create vector of 10 orientations that cancel out each other
+    2. Calculate the order parameter
+    ---------
+    Verification:
+    3. The order parameter is close to 0
+    """
+
     theta = np.array([-0.5,np.pi-0.5,-1.8,np.pi-1.8,-3.,np.pi-3.,-2.3,np.pi-2.3,-0.7,np.pi-0.7])
 
-    # Calculate the order parameter
     phi = Vicsek_Model.OrderParameter(theta)
 
-    # Test that the order parameter is 0 when the orientations cancel out each other
     assert np.isclose(phi,0)
 
 
