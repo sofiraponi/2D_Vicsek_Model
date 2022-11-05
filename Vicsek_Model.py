@@ -28,6 +28,7 @@ def InitialConfiguration(num_part,space_dim):
     x = np.random.rand(num_part)*space_dim
     y = np.random.rand(num_part)*space_dim
 
+    # Assert all particles must be inside the system space
     assert all(i < space_dim and i >= 0 for i in x)
     assert all(i < space_dim and i >= 0 for i in y)
 
@@ -95,6 +96,7 @@ def NeighborsMeanAngle(config,int_radius,space_dim):
 
     mean_theta=config[2].copy()
 
+    # Prepare the positions array for the functions that finds the neighbors of each particle
     pos=np.array([config[0],config[1]]).T
 
     for i in range(0,len(config[2])):
@@ -102,10 +104,9 @@ def NeighborsMeanAngle(config,int_radius,space_dim):
         # Find the neighbors of each particle within the interaction radius int_radius satisfying periodic boundary conditions
         neighbors = FindNeighbors(pos,int_radius,[pos[i]],space_dim)
 
+        # Calculate the mean orientation of the neighbor particles within int_radius
         mean_sin=np.mean(np.sin(config[2][neighbors]))
         mean_cos=np.mean(np.cos(config[2][neighbors]))
-
-        # Calculate the mean orientation of the neighbor particles within int_radius
         mean_theta[i] = np.arctan2(mean_sin,mean_cos)
 
     return mean_theta
@@ -137,6 +138,7 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step):
     new_config[0] = new_config[0] % space_dim
     new_config[1] = new_config[1] % space_dim
 
+    # Assert all particles must be inside the system space
     assert all(i < space_dim and i >= 0 for i in new_config[0])
     assert all(i < space_dim and i >= 0 for i in new_config[1])
 
@@ -164,8 +166,10 @@ def OrderParameter(theta):
     sy = np.sum(np.sin(theta))
     phi = ((sx)**2 + (sy)**2)**(0.5)/len(theta)
 
+    # Round the order parameter to the 10th decimal digit
     phi=round(phi,10)
 
+    # Assert that the order parameter must be between 0 and 1
     assert phi >= 0
     assert phi <= 1
 
@@ -189,6 +193,7 @@ def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_
     Returns:
         Position of the particles (position_updates), orientation of the particles (position_updates) at each step.
     """
+
     #Initial positions and orientations
     init_config=config.copy()
     position_updates=[[init_config[0],init_config[1]]]
@@ -197,7 +202,7 @@ def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_
     # Main loop
     for i in range(num_steps):
 
-        # Configuration update
+        # Update configuration
         config = ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step)
         new_config=config.copy()
 
