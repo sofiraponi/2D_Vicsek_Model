@@ -2,9 +2,9 @@
 
 The Vicsek model is a self-organized motion model that plays a key role in the study of active matter. This model shows a transition from the disordered movement of individuals within the group to collective behavior, caused only by interindividual forces of alignment, without attraction and repulsion. Many generalizations of the model have been applied to a wide range of problems, such as the collective behavior of large groups of animals. 
 
-The goal of this project is to simulate the two-dimensional Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
+The goal of this project is to simulate the 2D Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
 
-In order to simulate the 2D Vicsek Mosdel, once the input parameters have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
+In order to simulate the model, once the input parameters have been set, the initial coordinates and orientation of each particle are randomly generated respecting the periodic boundary conditions. Subsequently, at each time step, the position and direction of the particles is updated according to the model equations and the order parameter is calculated.
 
 The user must use the following syntax to launch the simulation and visualize the animation from command line interface.
 
