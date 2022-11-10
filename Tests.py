@@ -1,10 +1,10 @@
 #==============================================================
-#Author: Sofia Raponi
-#Date: 05 October, 2022
+# Author: Sofia Raponi
+# Date: 05 October, 2022
 #
-#  Tests
+# Tests
 #
-#  Aim: To test funcions in Viscek_Model.py.
+# Aim: To test funcions in Viscek_Model.py.
 #==============================================================
 
 import Vicsek_Model
@@ -63,7 +63,7 @@ def test_InitialOrientationRange(num_part,space_dim):
 
     """
     Procedure:
-    1. Initialization random seed
+    1. Initialize random seed
     2. Generate initial configuration given a certain number of particles (num_part) and linear dimension of space (space_dim)
     ---------
     Verification:
@@ -386,7 +386,7 @@ def test_ConfigurationUpdate_OutputRange(num_part,int_radius,noise_ampl,space_di
     ---------
     Verification:
     6. All the updated particles coordinates (x, y) are in [0, space_dim)
-    7. All the updated particles orientations are in [-π-0.5, π+0-5]
+    7. All the updated particles orientations are in [-π-0.5, π+0.5]
     """
 
     np.random.seed(3)
