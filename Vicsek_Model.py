@@ -71,7 +71,7 @@ def FindNeighbors(positions,int_radius,particle,space_dim):
         space_dim: linear dimension of space
 
     Returns:
-    List of neighbors indeces inds.
+    List of neighbors indeces (inds).
     """
 
     tree=KDTree(positions,boxsize=space_dim)
@@ -91,7 +91,7 @@ def NeighborsMeanAngle(config,int_radius,space_dim):
         space_dim: linear dimension of space
 
     Returns:
-        Mean orientation of the particles.
+        Mean orientation of the particles (mean_theta).
     """
 
     mean_theta=config[2].copy()
@@ -159,7 +159,7 @@ def OrderParameter(theta):
         theta: particles orientation
 
     Returns:
-        Order parameter phi.
+        Order parameter (phi).
     """
 
     sx = np.sum(np.cos(theta))
@@ -181,7 +181,7 @@ def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_
     This function updates the particles position and orienation and calculates the order parameter num_steps times.
 
     Parameters
-        init_config: previous particles configuration
+        config: previous particles configuration
         vel: particles velocity
         int_radius: interaction radius
         noise_ampl: noise amplituse
@@ -194,7 +194,7 @@ def Simulate(config,vel,int_radius,noise_ampl,space_dim,time_step,num_steps,vel_
         Position of the particles (position_updates), orientation of the particles (position_updates) at each step.
     """
 
-    #Initial positions and orientations
+    # Initial positions and orientations
     init_config=config.copy()
     position_updates=[[init_config[0],init_config[1]]]
     theta_updates=[init_config[2]]
