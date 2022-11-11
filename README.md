@@ -4,11 +4,12 @@ The Vicsek model is a self-organized motion model that plays a key role in the s
 
 The goal of this project is to simulate the 2D Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
 
-The user must use the following command line syntax to clone the repository and to launch the simulation and visualize the animation.
+The user must use the following command line syntax to clone the repository and then launch the simulation and visualize the animation.
 
 ```
 git clone https://github.com/sofiraponi/2D_Vicsek_Model
 cd 2D_Vicsek_Model
+
 python Simulation.py settings.ini
 python Animation.py settings.ini
 ```
@@ -57,19 +58,31 @@ defined in [Vicsek_Model](https://github.com/sofiraponi/2D_Vicsek_Model/blob/mai
 Below are shown three examples of the simulation, [animation_1](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif), [animation_2](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif) and [animation_3](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif), obtained with increasing noise amplitude ![equation](https://latex.codecogs.com/svg.image?\eta) and fixed all the other parameters. As expected, as the noise amplitude increases, the transition to the collective motion of particles is more and more hampered.
 
 ### Animation 1
-Command line syntax: ```python Simulation.py settings_1.ini``` , ```python Animation.py settings_1.ini```
+Command line syntax: 
+```
+python Simulation.py settings_1.ini
+python Animation.py settings_1.ini
+```
 
 
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_1.gif)
 
 ### Animation 2
-Command line syntax: ```python Simulation.py settings_2.ini``` , ```python Animation.py settings_2.ini```
+Command line syntax: 
+```
+python Simulation.py settings_2.ini
+python Animation.py settings_2.ini
+```
 
 
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_2.gif)
 
 ### Animation 3
-Command line syntax: ```python Simulation.py settings_3.ini``` , ```python Animation.py settings_3.ini```
+Command line syntax: 
+```
+python Simulation.py settings_3.ini
+python Animation.py settings_3.ini
+```
 
 
 ![animation](https://github.com/sofiraponi/2D_Vicsek_Model/blob/main/animation_3.gif)
