@@ -78,7 +78,7 @@ def test_InitialOrientationRange(num_part,space_dim):
 
 
 @given(vel_mod=st.floats(0,10,exclude_min=True),num_part=st.integers(10,500), space_dim = st.floats(1,50))
-def test_VelocityCalculation_OutputLenght(vel_mod):
+def test_VelocityCalculation_OutputLenght(vel_mod,num_part,space_dim):
 
     """
     Procedure:
@@ -402,7 +402,7 @@ def test_ConfigurationUpdate_OutputRange(num_part,int_radius,noise_ampl,space_di
     assert all(i < space_dim and i >= 0 for i in config[0])
     assert all(i < space_dim and i >= 0 for i in config[1])
 
-    assert all(i <= np.pi+0.5 and i >= -np.pi-0.5 for i in config[2])
+    assert all(i <= 2*np.pi and i >= -2*np.pi for i in config[2])
 
 
 def test_ConfigurationUpdate_BoundaryConditions():
