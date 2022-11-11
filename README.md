@@ -4,11 +4,14 @@ The Vicsek model is a self-organized motion model that plays a key role in the s
 
 The goal of this project is to simulate the 2D Vicsek model and to visualize the phase transition through an animation of the particle system and a real-time plot of the evolution of the order parameter.
 
-The user must use the following syntax to launch the simulation and visualize the animation from command line interface.
+The user must use the following command line syntax to clone the repository and to launch the simulation and visualize the animation.
 
-1. ```python Simulation.py settings.ini```
-
-2. ```python Animation.py settings.ini```
+```
+git clone https://github.com/sofiraponi/2D_Vicsek_Model
+cd 2D_Vicsek_Model
+python Simulation.py settings.ini
+python Animation.py settings.ini
+```
 
 ## Model definition
 The model describes the synchronous motion of ![equation](https://latex.codecogs.com/svg.image?N) self-propelled particles, characterized by the position ![equation](https://latex.codecogs.com/svg.image?\textbf{r}_i(t)) and the velocity ![equation](https://latex.codecogs.com/svg.image?\textbf{v}_i(t)), with constant modulus ![equation](https://latex.codecogs.com/svg.image?v_0) and direction ![equation](https://latex.codecogs.com/svg.image?\textbf{s}_i(t)=(\cos\theta_i(t),\sin\theta_i(t))). The position of the ![equation](https://latex.codecogs.com/svg.image?i)-th particle is updated at each time step ![equation](https://latex.codecogs.com/svg.image?\Delta&space;t) according to the following dynamic evolution equation: 
