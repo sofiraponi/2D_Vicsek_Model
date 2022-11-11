@@ -146,7 +146,7 @@ def ConfigurationUpdate(config,vel,int_radius,noise_ampl,space_dim,time_step):
     mean_theta =  NeighborsMeanAngle(new_config,int_radius,space_dim)
 
     # Update particles orientation
-    new_config[2] = mean_theta + noise_ampl*(np.random.rand(len(new_config[2]))-0.5)
+    new_config[2] = mean_theta + noise_ampl*np.pi*(2*np.random.rand(len(new_config[2]))-1)
 
     return new_config
 
